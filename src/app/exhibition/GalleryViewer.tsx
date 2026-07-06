@@ -294,6 +294,9 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
 
     // --- アニメーションループ ---
     engine.runRenderLoop(() => {
+      // 縦方向の首振り（ピッチ・ロール）を完全にロックし、左右の回転（ヨー）のみを許可する
+      camera.rotation.x = 0;
+      camera.rotation.z = 0;
       scene.render();
     });
 
