@@ -37,6 +37,12 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     const camera = new BABYLON.FreeCamera('freeCamera', cameraStartPos, scene);
     camera.attachControl(canvasRef.current, true);
     
+    // カメラの初期方向を設定 (ロビー時は正面の展示室方向を向くように設定)
+    if (selectedRoom === 'lobby') {
+      // 北（Zのプラス方向、ポータルがある方）を向くように設定
+      camera.setTarget(new BABYLON.Vector3(0, 1.7, 0));
+    }
+    
     // 前後左右の「移動キー」をすべて空配列にし、キーボードによる移動（歩行）を完全に禁止する
     camera.keysUp = [];
     camera.keysDown = [];
