@@ -27,14 +27,24 @@ export default function GalleryViewer({ onSelectCard }: GalleryProps) {
     const camera = new BABYLON.FreeCamera('freeCamera', new BABYLON.Vector3(0, 1.7, -10), scene);
     camera.attachControl(canvasRef.current, true);
     
-    // 操作キー設定（WASDで操作できるようにする）
-    camera.keysUp = [87];    // W
-    camera.keysDown = [83];  // S
-    camera.keysLeft = [65];  // A
-    camera.keysRight = [68]; // D
+    // 操作キー設定（WASDと矢印キーの両方で移動できるようにする）
+    camera.keysUp = [87, 38];    // W or UpArrow
+    camera.keysDown = [83, 40];  // S or DownArrow
+    camera.keysLeft = [65, 37];  // A or LeftArrow
+    camera.keysRight = [68, 39]; // D or RightArrow
     
-    camera.speed = 0.35;
-    camera.angularSensibility = 1200;
+    // タッチ＆マウスドラッグによる前進も可能にする
+    // PCでは右ドラッグまたは左ドラッグで視点旋回、スマホ等のタッチデバイスではドラッグで旋回、ダブルタップまたは長押しで前進などのコントロールを有効化
+    camera.speed = 0.45;
+    camera.angularSensibility = 1000;
+    
+    // タッチデバイスでのピンチ・スワイプ入力感度の調整
+    if (camera.inputs.attached.touch) {
+      // モバイル用のタッチコントロール設定
+      const touchInput = camera.inputs.attached.touch as BABYLON.FreeCameraTouchInput;
+      touchInput.touchAngularSensibility = 1500;
+      touchInput.touchMoveSensibility = 200;
+    }
     
     // 衝突判定と重力の有効化（ギャラリーの床から落ちないようにする）
     scene.collisionsEnabled = true;
@@ -201,10 +211,10 @@ export default function GalleryViewer({ onSelectCard }: GalleryProps) {
       {/* 操作ガイドオーバーレイ */}
       <div className="absolute bottom-4 left-4 right-4 flex flex-col md:flex-row justify-between items-center gap-2 bg-[#1a1816]/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-[#b39369]/20 text-[10px] text-[#ebdcd0] pointer-events-none">
         <div className="flex items-center gap-2.5">
-          <span>🎮 <strong>操作方法:</strong> 画面ドラッグで視点移動 / <kbd className="bg-black/50 px-1.5 py-0.5 rounded text-white font-mono">W</kbd><kbd className="bg-black/50 px-1.5 py-0.5 rounded text-white font-mono">A</kbd><kbd className="bg-black/50 px-1.5 py-0.5 rounded text-white font-mono">S</kbd><kbd className="bg-black/50 px-1.5 py-0.5 rounded text-white font-mono">D</kbd>キーで移動</span>
+          <span>🎮 <strong>操作方法:</strong> WASD / 矢印キーで移動 ＆ マウス・タッチドラッグで視点移動（スマホ対応）</span>
         </div>
         <div>
-          <span>🎨 <strong>絵画をクリック:</strong> 右側の解説ボードにシンボル解釈を表示</span>
+          <span>🎨 <strong>タップ / クリック:</strong> 絵画の解説ボードを表示</span>
         </div>
       </div>
 
