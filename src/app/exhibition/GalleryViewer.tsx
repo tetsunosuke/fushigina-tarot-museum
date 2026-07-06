@@ -212,20 +212,20 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
         // 看板の真上（Y: 2.85m付近）にミニ額縁として画像を飾る
         const frame = BABYLON.MeshBuilder.CreateBox(`lobby_preview_frame_${portal.key}`, { width: 0.9, height: 1.2, depth: 0.1 }, scene);
         frame.position.set(portal.x, 2.85, portal.z);
-        frame.rotation.y = (portal.rotationY || 0) + Math.PI;
+        frame.rotation.y = (portal.rotationY || 0) + Math.PI; // 看板と同じ回転方向
         const frameMat = new BABYLON.StandardMaterial(`lobby_preview_frame_mat_${portal.key}`, scene);
         frameMat.diffuseColor = new BABYLON.Color3(0.08, 0.06, 0.04);
         frame.material = frameMat;
 
         const canvas = BABYLON.MeshBuilder.CreatePlane(`lobby_preview_canvas_${portal.key}`, { width: 0.8, height: 1.1 }, scene);
-        // 額縁の少し手前
-        const rad = portal.rotationY || 0;
+        // プレイヤーの方向（手前）へ向かうベクトルに沿って少し手前に配置
+        const rad = (portal.rotationY || 0) + Math.PI;
         canvas.position.set(
-          portal.x + Math.sin(rad) * 0.06,
+          portal.x + Math.sin(rad) * -0.06, // 額縁の面から少し手前に浮かせる
           2.85,
-          portal.z - Math.cos(rad) * 0.06
+          portal.z + Math.cos(rad) * -0.06
         );
-        canvas.rotation.y = rad + Math.PI;
+        canvas.rotation.y = rad; // プレイヤーの方向を向かせる
 
         const artMat = new BABYLON.StandardMaterial(`lobby_preview_art_mat_${portal.key}`, scene);
         artMat.diffuseTexture = new BABYLON.Texture(previewImageMap[portal.key], scene);
