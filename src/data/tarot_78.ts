@@ -12,7 +12,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "愚者",
     "nameEn": "The Fool",
     "symbol": "0",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/0.jpg",
     "caption": "崖のふちに立つ若者が、上を見上げて一歩を踏み出そうとしている。足元では白い犬が警告するように吠えている。この絵画が問うのは「未知への一歩を踏み出す勇気があるか」という問いである。",
     "symbols": [
       {
@@ -78,7 +78,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "女教皇",
     "nameEn": "The High Priestess",
     "symbol": "II",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/2.jpg",
     "caption": "白と黒の二本の柱の間に座る女性。手には律法（TORA）の巻物を持ち、足元には三日月が輝く。この絵画が問うのは「言葉にできない直感を信じるか」という問いである。",
     "symbols": [
       {
@@ -104,7 +104,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "女帝",
     "nameEn": "The Empress",
     "symbol": "III",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/3.jpg",
     "caption": "豊かな森と麦畑に囲まれ、ふかふかのクッションに座る女性。頭上には12の星の冠が輝く。この絵画が問うのは「自己や周囲を十分に満たしているか」という問いである。",
     "symbols": [
       {
@@ -130,7 +130,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "皇帝",
     "nameEn": "The Emperor",
     "symbol": "IV",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/4.jpg",
     "caption": "荒涼とした山々を背に、彫刻の施された石の玉座に座る年長者。手にはアンクの笏を持ち、威厳を放つ。この絵画が問うのは「自らの秩序と責任で境界を守れているか」という問いである。",
     "symbols": [
       {
@@ -156,7 +156,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "法王",
     "nameEn": "The Hierophant",
     "symbol": "V",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/5.jpg",
     "caption": "神殿の二本の柱の間で、二人の参拝者に教えを説く聖職者。右手は祝福を授け、左手には三重の十字架を持つ。この絵画が問うのは「信頼に足る教えや伝統を継承しているか」という問いである。",
     "symbols": [
       {
@@ -222,7 +222,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "戦車",
     "nameEn": "The Chariot",
     "symbol": "VII",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/7.jpg",
     "caption": "星を散りばめた天蓋の戦車に乗り、二頭のスフィンクスを従える若い戦士。手綱はなく、ただ意思の力で進む方向を制御している。この絵画が問うのは「対立する衝動をコントロールし進めているか」という問いである。",
     "symbols": [
       {
@@ -248,7 +248,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "力",
     "nameEn": "Strength",
     "symbol": "VIII",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/8.jpg",
     "caption": "頭上に無限大の記号を戴く女性が、獰猛なライオンの口を優しく閉じる。武力ではなく、慈愛と忍耐によって猛獣を鎮めている。この絵画が問うのは「自らの本能的な恐れや怒りを愛で包み込めるか」という問いである。",
     "symbols": [
       {
@@ -274,7 +274,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "隠者",
     "nameEn": "The Hermit",
     "symbol": "IX",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/9.jpg",
     "caption": "暗闇の山の頂に一人立ち、六角星の灯るランタンを掲げ、杖をつく老人。静寂の中で自らの内なる光だけを頼りに思索している。この絵画が問うのは「他者の喧騒を離れ、自らの中の真実を求めているか」という問いである。",
     "symbols": [
       {
@@ -300,7 +300,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "運命の輪",
     "nameEn": "Wheel of Fortune",
     "symbol": "X",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/10.jpg",
     "caption": "青空を背景に、不思議な文字が刻まれた巨大な輪が巡る。輪の周りには聖獣やスフィンクスが配されている。この絵画が問うのは「制御できない大きな変化や周期をどう受け止めるか」という問いである。",
     "symbols": [
       {
@@ -366,7 +366,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "吊るされた男",
     "nameEn": "The Hanged Man",
     "symbol": "XII",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/12.jpg",
     "caption": "生きているT字の木から、片足を縛られて逆さまに吊るされた男。しかしその表情は穏やかで、頭部からは眩しい後光が差している。この絵画が問うのは「あえて行動を止め、逆の視点から物事を見る覚悟があるか」という問いである。",
     "symbols": [
       {
@@ -392,7 +392,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "死神",
     "nameEn": "Death",
     "symbol": "XIII",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/13.jpg",
     "caption": "白馬に跨り、漆黒の甲冑を着た死神が、ゆっくりと進軍する。足元では王が倒れ、少女や聖職者が祈りを捧げる。遠くの二つの塔の間に太陽が沈む。この絵画が問うのは「終わりを受け入れ、新しい始まりのために手放せるか」という問いである。",
     "symbols": [
       {
@@ -418,7 +418,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "節制",
     "nameEn": "Temperance",
     "symbol": "XIV",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/14.jpg",
     "caption": "片足を水に、もう片足を大地に置き、二つの杯の間で絶え間なく流れる水を移し替える天使。極端な偏りを避け、中庸を保ちながらエネルギーを循環させている。この絵画が問うのは「相反する力を自らの中で調和させられるか」という問いである。",
     "symbols": [
       {
@@ -444,7 +444,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "悪魔",
     "nameEn": "The Devil",
     "symbol": "XV",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/15.jpg",
     "caption": "角を持つ巨大な悪魔が黒い祭壇の上に立ち、足元で男女が首に鎖を巻かれて繋がれている。しかし、鎖は緩く、本人がその気になれば外せるように見える。この絵画が問うのは「自らを縛り付けている執着の正体を見破れるか」という問いである。",
     "symbols": [
       {
@@ -470,7 +470,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "塔",
     "nameEn": "The Tower",
     "symbol": "XVI",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/16.jpg",
     "caption": "暗闇の空から落雷を受け、王冠が吹き飛ぶ石造りの塔。二人の人物が真っ逆さまに落下している。強固に築いたはずの幻想が崩壊する劇的な瞬間。この絵画が問うのは「作られた安全に安住せず、崩壊から真実を見出せるか」という問いである。",
     "symbols": [
       {
@@ -496,7 +496,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "星",
     "nameEn": "The Star",
     "symbol": "XVII",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/17.jpg",
     "caption": "満天の星空の下、一人の裸の女性が二つの水瓶から大地と泉に水を注ぐ。背後には鳥がとまる木があり、大きな八角の星がひときわ明るく輝く。この絵画が問うのは「すべての見返りを求めず、ただ希望を注ぎ出せるか」という問いである。",
     "symbols": [
       {
@@ -522,7 +522,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "月",
     "nameEn": "The Moon",
     "symbol": "XVIII",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/18.jpg",
     "caption": "不気味に歪む月が空に浮かび、地上の塔の間で犬と狼が吼え交わす。水面からは一匹のザリガニが這い出ようとしている。曖昧で幻想的な不安と無意識の世界。この絵画が問うのは「形のない不安を拒絶せず、そこから這い上がる知恵を紡げるか」という問いである。",
     "symbols": [
       {
@@ -548,7 +548,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "太陽",
     "nameEn": "The Sun",
     "symbol": "XIX",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/19.jpg",
     "caption": "燦然と輝く大きな太陽の顔。その下で、赤い旗を持った裸の子供が白馬に跨り、後方にはひまわりが咲き誇る。この絵画が問うのは「何の偽りもなく、あるがままの喜びを全身で表現できるか」という問いである。",
     "symbols": [
       {
@@ -574,7 +574,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "審判",
     "nameEn": "Judgement",
     "symbol": "XX",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/20.jpg",
     "caption": "雲の中から大天使ミカエルが金色の喇叭を吹き鳴らす。その音色に呼応し、灰色の海に浮かぶ棺から、裸の人々が両手を広げて立ち上がる。この絵画が問うのは「過去の呪縛から目覚め、本来の自己を呼び戻す時が来たか」という問いである。",
     "symbols": [
       {
@@ -600,7 +600,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "世界",
     "nameEn": "The World",
     "symbol": "XXI",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/21.jpg",
     "caption": "月桂樹の輪の中に浮かび、両手に杖を持って軽やかに踊る人物。四隅には四つの聖獣が静かに見守る。すべてが完成し、調和した大団円の姿。この絵画が問うのは「旅の完結を祝い、新しい宇宙と一体になる準備はできたか」という問いである。",
     "symbols": [
       {
@@ -626,7 +626,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドのエース",
     "nameEn": "Ace of Wands",
     "symbol": "Wands Ace",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w1.jpg",
     "caption": "『ワンドのエース』。雲から伸びる手と新緑の芽吹く杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、情熱的な新しい冒険やプロジェクトの種火。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -652,7 +652,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの2",
     "nameEn": "Two of Wands",
     "symbol": "Wands 2",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w2.jpg",
     "caption": "『ワンドの2』。地球儀を見つめる男と二本の強固な杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、獲得した成果をもとに、さらなる展望を描く段階。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -678,7 +678,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの3",
     "nameEn": "Three of Wands",
     "symbol": "Wands 3",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w3.jpg",
     "caption": "『ワンドの3』。海を見送る後ろ姿と立つ三本の杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、船出し、確信を持って将来の展開を待つ。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -704,7 +704,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの4",
     "nameEn": "Four of Wands",
     "symbol": "Wands 4",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w4.jpg",
     "caption": "『ワンドの4』。花輪が飾られた四本の杖と祝福の門が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、歓迎と休息、強固なコミュニティの確立。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -730,7 +730,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの5",
     "nameEn": "Five of Wands",
     "symbol": "Wands 5",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w5.jpg",
     "caption": "『ワンドの5』。競い合う五人の若者と交差する杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、悪意のない競争、切磋琢磨、内なる葛藤。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -756,7 +756,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの6",
     "nameEn": "Six of Wands",
     "symbol": "Wands 6",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w6.jpg",
     "caption": "『ワンドの6』。月桂冠を戴いて馬に乗る勝者と周囲の杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、勝利のパレード、公の場での成功とリーダーシップ。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -782,7 +782,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの7",
     "nameEn": "Seven of Wands",
     "symbol": "Wands 7",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w7.jpg",
     "caption": "『ワンドの7』。崖の上から防衛する男と向かい来る六本の杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、不利に見える挑戦に対しても、折れずに抵抗する強さ。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -808,7 +808,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの8",
     "nameEn": "Eight of Wands",
     "symbol": "Wands 8",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w8.jpg",
     "caption": "『ワンドの8』。空を同じ角度で飛行する八本の杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、素早い行動、メッセージの到来、停滞の終わり。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -834,7 +834,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの9",
     "nameEn": "Nine of Wands",
     "symbol": "Wands 9",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w9.jpg",
     "caption": "『ワンドの9』。包帯を頭に巻いて警戒する男と九本の杖が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、最後の難関に対する備え、粘り強さと防衛。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -860,7 +860,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドの10",
     "nameEn": "Ten of Wands",
     "symbol": "Wands 10",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w10.jpg",
     "caption": "『ワンドの10』。十本の杖を抱えて重そうに歩く男が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、重荷のピーク、他者への委譲や整理が必要な段階。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -886,7 +886,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドのペイジ",
     "nameEn": "Page of Wands",
     "symbol": "Wands Page",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w11.jpg",
     "caption": "『ワンドのペイジ』。杖の芽を見つめる使者と熱砂の砂漠が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、メッセンジャー、未熟ながらも無限の可能性を秘めた若者。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -912,7 +912,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドのナイト",
     "nameEn": "Knight of Wands",
     "symbol": "Wands Knight",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w12.jpg",
     "caption": "『ワンドのナイト』。跳ねる馬に跨り熱い砂漠を進む騎士が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、急進、情熱の赴くままに進む推進力。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -938,7 +938,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドのクイーン",
     "nameEn": "Queen of Wands",
     "symbol": "Wands Queen",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w13.jpg",
     "caption": "『ワンドのクイーン』。ひまわりと黒猫を連れて座る女王が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、包容力のある情熱、自己肯定感、親しみやすさ。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -964,7 +964,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ワンドのKing",
     "nameEn": "King of Wands",
     "symbol": "Wands King",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/w14.jpg",
     "caption": "『ワンドのKing』。燃えるトカゲの玉座に座る権威者が描かれている。この絵画が問うのは「自らの情熱、意志、創造的行動力において、情熱の統制、起業家精神、強固な意志の確立。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -990,7 +990,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップのエース",
     "nameEn": "Ace of Cups",
     "symbol": "Cups Ace",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c1.jpg",
     "caption": "『カップのエース』。溢れ出る五つの水流と聖杯が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、精神的な充足、新たな感情的体験の幕開け。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1016,7 +1016,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの2",
     "nameEn": "Two of Cups",
     "symbol": "Cups 2",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c2.jpg",
     "caption": "『カップの2』。杯を交わす男女と翼のあるライオンの紋章が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、絆、信頼関係、対話の始まり。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1042,7 +1042,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの3",
     "nameEn": "Three of Cups",
     "symbol": "Cups 3",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c3.jpg",
     "caption": "『カップの3』。杯を掲げて踊る三人の女性が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、祝祭、友情、成果の共有と祝福。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1068,7 +1068,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの4",
     "nameEn": "Four of Cups",
     "symbol": "Cups 4",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c4.jpg",
     "caption": "『カップの4』。腕を組み木の下に座る男と雲から差し出される杯が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、マンネリ、内省、一時的な自己閉鎖。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1094,7 +1094,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの5",
     "nameEn": "Five of Cups",
     "symbol": "Cups 5",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c5.jpg",
     "caption": "『カップの5』。倒れた三つの杯を見つめる黒いマントの男が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、喪失感からの回復、視点の切り替えが必要な移行期。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1120,7 +1120,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの6",
     "nameEn": "Six of Cups",
     "symbol": "Cups 6",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c6.jpg",
     "caption": "『カップの6』。花が飾られた古い杯を差し出す子供たちが描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、郷愁、純粋な好意、過去から受け取るヒント。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1146,7 +1146,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの7",
     "nameEn": "Seven of Cups",
     "symbol": "Cups 7",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c7.jpg",
     "caption": "『カップの7』。雲の上に浮かぶ多様な誘惑の入った七つの杯が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、夢想、目移り、現実味のないアイデア。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1172,7 +1172,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの8",
     "nameEn": "Eight of Cups",
     "symbol": "Cups 8",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c8.jpg",
     "caption": "『カップの8』。積み上げられた杯の背後を去る旅人が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、現状からの卒業、未練の手放し、新たな目的地の模索。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1198,7 +1198,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの9",
     "nameEn": "Nine of Cups",
     "symbol": "Cups 9",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c9.jpg",
     "caption": "『カップの9』。満足げに腕を組み杯の前に座る男が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、ウィッシュカード（願いの成就）、充足感、自己満悦。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1224,7 +1224,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップの10",
     "nameEn": "Ten of Cups",
     "symbol": "Cups 10",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c10.jpg",
     "caption": "『カップの10』。虹の架け橋の下で手を広げる家族と十個の杯が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、究極の幸福、平和、共有される愛の完結。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1250,7 +1250,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップのペイジ",
     "nameEn": "Page of Cups",
     "symbol": "Cups Page",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c11.jpg",
     "caption": "『カップのペイジ』。杯から飛び出す魚を見つめる若者が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、感受性の芽生え、無邪気な感性、嬉しいニュース。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1276,7 +1276,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップのナイト",
     "nameEn": "Knight of Cups",
     "symbol": "Cups Knight",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c12.jpg",
     "caption": "『カップのナイト』。静かに馬を進め杯を差し出す騎士が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、理想主義、愛情の提示、ロマンチックな展開。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1302,7 +1302,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップのクイーン",
     "nameEn": "Queen of Cups",
     "symbol": "Cups Queen",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c13.jpg",
     "caption": "『カップのクイーン』。装飾された美しい杯を凝視する女王が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、直感の女王、深い共感、無意識の知恵。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1328,7 +1328,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "カップのKing",
     "nameEn": "King of Cups",
     "symbol": "Cups King",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/c14.jpg",
     "caption": "『カップのKing』。荒波の上に浮かぶ石座に座る権威者が描かれている。この絵画が問うのは「自らの感情、関係性、直感、感受性において、情緒の成熟、包容力、カウンセラーのような存在。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1354,7 +1354,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードのエース",
     "nameEn": "Ace of Swords",
     "symbol": "Swords Ace",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s1.jpg",
     "caption": "『ソードのエース』。王冠を貫く一本の剣と雲から伸びる手が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、客観的真理、障壁の突破、言葉による勝利。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1380,7 +1380,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの2",
     "nameEn": "Two of Swords",
     "symbol": "Swords 2",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s2.jpg",
     "caption": "『ソードの2』。目隠しをして二本の剣を交差させる女性が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、静観、決断への恐れ、感情の遮断。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1406,7 +1406,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの3",
     "nameEn": "Three of Swords",
     "symbol": "Swords 3",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s3.jpg",
     "caption": "『ソードの3』。雨の中でハートを貫く三本の剣が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、悲嘆、失意、避けて通れない真実の直視。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1432,7 +1432,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの4",
     "nameEn": "Four of Swords",
     "symbol": "Swords 4",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s4.jpg",
     "caption": "『ソードの4』。礼拝堂の墓碑の上で横たわる戦士と四本の剣が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、休息、退却、内なる再チャージ。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1458,7 +1458,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの5",
     "nameEn": "Five of Swords",
     "symbol": "Swords 5",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s5.jpg",
     "caption": "『ソードの5』。剣を奪い嘲笑する男と去りゆく敗者たちが描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、エゴのぶつかり合い、不和、代償の大きい勝利。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1484,7 +1484,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの6",
     "nameEn": "Six of Swords",
     "symbol": "Swords 6",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s6.jpg",
     "caption": "『ソードの6』。水面を静かに進む船と六本の剣が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、回復への旅立ち、客観的支援、難局からの脱出。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1510,7 +1510,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの7",
     "nameEn": "Seven of Swords",
     "symbol": "Swords 7",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s7.jpg",
     "caption": "『ソードの7』。五本の剣を盗み出して逃げる男と残された二本の剣が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、逃避、裏切り、戦略的な妥協。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1536,7 +1536,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの8",
     "nameEn": "Eight of Swords",
     "symbol": "Swords 8",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s8.jpg",
     "caption": "『ソードの8』。目隠しをされ剣の檻に囲まれた女性が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、自己否定、身動きの取れなさ、幻想の限界。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1562,7 +1562,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの9",
     "nameEn": "Nine of Swords",
     "symbol": "Swords 9",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s9.jpg",
     "caption": "『ソードの9』。ベッドの上で顔を覆って泣く人物と背景の九本の剣が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、過度の不安、不眠、内なる恐怖の拡大。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1588,7 +1588,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードの10",
     "nameEn": "Ten of Swords",
     "symbol": "Swords 10",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s10.jpg",
     "caption": "『ソードの10』。十本の剣に体を貫かれて倒れる人物が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、底を打つ、劇的な終焉、再出発の兆し。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1614,7 +1614,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードのペイジ",
     "nameEn": "Page of Swords",
     "symbol": "Swords Page",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s11.jpg",
     "caption": "『ソードのペイジ』。風の吹く丘の上で両手で剣を構える若者が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、情報収集、鋭い観察眼、警戒心の強さ。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1640,7 +1640,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードのナイト",
     "nameEn": "Knight of Swords",
     "symbol": "Swords Knight",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s12.jpg",
     "caption": "『ソードのナイト』。激しい向かい風の中を突撃する若き騎士が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、果敢な挑戦、急展開、容赦のない言葉。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1666,7 +1666,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードのクイーン",
     "nameEn": "Queen of Swords",
     "symbol": "Swords Queen",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s13.jpg",
     "caption": "『ソードのクイーン』。雲の上に厳かに座り、片手を挙げる女王が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、境界線の確立、自立心、明晰な批判精神。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1692,7 +1692,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ソードのKing",
     "nameEn": "King of Swords",
     "symbol": "Swords King",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/s14.jpg",
     "caption": "『ソードのKing』。玉座に座り、剣をわずかに傾ける指揮官が描かれている。この絵画が問うのは「自らの論理、知性、言葉、葛藤、決断において、専門的知恵、ルール、客観的決断の最高権威。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1718,7 +1718,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルのエース",
     "nameEn": "Ace of Pentacles",
     "symbol": "Pentacles Ace",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p1.jpg",
     "caption": "『ペンタクルのエース』。雲から現れる手と輝く金貨が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、ビジネスの種、健康、経済的チャンスの萌芽。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1744,7 +1744,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの2",
     "nameEn": "Two of Pentacles",
     "symbol": "Pentacles 2",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p2.jpg",
     "caption": "『ペンタクルの2』。金貨をジャグリングしながら踊る男と背後の荒波が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、優先順位の調整、柔軟性、臨機応変な対応。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1770,7 +1770,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの3",
     "nameEn": "Three of Pentacles",
     "symbol": "Pentacles 3",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p3.jpg",
     "caption": "『ペンタクルの3』。大聖堂で議論を重ねる彫刻家と二人の聖職者が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、チームワーク、専門技術の研鑽、確実なスタート。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1796,7 +1796,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの4",
     "nameEn": "Four of Pentacles",
     "symbol": "Pentacles 4",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p4.jpg",
     "caption": "『ペンタクルの4』。金貨をしっかりと抱きしめ、頭や足で固定する男が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、独占欲、過度な防衛、現状維持の罠。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1822,7 +1822,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの5",
     "nameEn": "Five of Pentacles",
     "symbol": "Pentacles 5",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p5.jpg",
     "caption": "『ペンタクルの5』。雪の降る教会の前を通り過ぎる二人の困窮者が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、一時的な困窮、孤立、視野の狭窄。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1848,7 +1848,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの6",
     "nameEn": "Six of Pentacles",
     "symbol": "Pentacles 6",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p6.jpg",
     "caption": "『ペンタクルの6』。天秤を持ち、困窮者に施しを与える裕福な男が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、寛大さ、資金援助、パワーバランスの調整。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1874,7 +1874,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの7",
     "nameEn": "Seven of Pentacles",
     "symbol": "Pentacles 7",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p7.jpg",
     "caption": "『ペンタクルの7』。実った作物を見つめて手を止める農夫が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、進捗の確認、待機、やり方の見直し。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1900,7 +1900,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの8",
     "nameEn": "Eight of Pentacles",
     "symbol": "Pentacles 8",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p8.jpg",
     "caption": "『ペンタクルの8』。黙々と石の金貨を彫り続ける職人が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、専門技能の習得、継続は力、ディテールへのこだわり。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1926,7 +1926,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの9",
     "nameEn": "Nine of Pentacles",
     "symbol": "Pentacles 9",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p9.jpg",
     "caption": "『ペンタクルの9』。豊かな庭で手に鷹を乗せて佇む女性が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、自立した繁栄、洗練、優雅なひととき。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1952,7 +1952,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルの10",
     "nameEn": "Ten of Pentacles",
     "symbol": "Pentacles 10",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p10.jpg",
     "caption": "『ペンタクルの10』。古い城門で家族と老人が集う安らぎが描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、永続する富、家族の絆、伝統の継承。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -1978,7 +1978,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルのペイジ",
     "nameEn": "Page of Pentacles",
     "symbol": "Pentacles Page",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p11.jpg",
     "caption": "『ペンタクルのペイジ』。広大な野原で両手で金貨を見つめる若者が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、勉学、現実的なアプローチ、価値の発見。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -2004,7 +2004,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルのナイト",
     "nameEn": "Knight of Pentacles",
     "symbol": "Pentacles Knight",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p12.jpg",
     "caption": "『ペンタクルのナイト』。耕された畑の前に立ち、金貨を見つめて静止する馬上の騎士が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、忍耐強さ、地道な実行力、保守的な進捗。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -2030,7 +2030,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルのクイーン",
     "nameEn": "Queen of Pentacles",
     "symbol": "Pentacles Queen",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p13.jpg",
     "caption": "『ペンタクルのクイーン』。豊かな自然の中で金貨を慈しむように見つめる女王が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、物質的な育成、心地よさ、家庭の守護。とどう向き合うか」という問いである。",
     "symbols": [
       {
@@ -2056,7 +2056,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "ペンタクルのKing",
     "nameEn": "King of Pentacles",
     "symbol": "Pentacles King",
-    "imagePath": "/tarot/back.jpg",
+    "imagePath": "/tarot/p14.jpg",
     "caption": "『ペンタクルのKing』。牛の頭が彫られた玉座に座る富豪が描かれている。この絵画が問うのは「自らの現実、物質、財産、身体、堅実な成果において、経済的成功、経営能力、絶対的な安定の象徴。とどう向き合うか」という問いである。",
     "symbols": [
       {
