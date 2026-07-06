@@ -40,8 +40,8 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     
     // カメラの初期方向を設定 (ロビー時は正面の展示室方向を向くように設定)
     if (selectedRoom === 'lobby') {
-      // 北（Zのプラス方向、ポータルがある方）を向くように設定
-      camera.setTarget(new BABYLON.Vector3(0, 1.7, 0));
+      // 少し斜め左（大アルカナ室への扉看板がある方向）を最初に向くようにして、通路が見えるようにする
+      camera.setTarget(new BABYLON.Vector3(-15, 1.7, -9.5));
     }
     
     // 前後左右の「移動キー」をすべて空配列にし、キーボードによる移動（歩行）を完全に禁止する
@@ -129,16 +129,20 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     const partitionMaterial = new BABYLON.StandardMaterial('partitionMat', scene);
     partitionMaterial.diffuseColor = new BABYLON.Color3(0.20, 0.18, 0.16);
 
-    // 仕切り用の壁配置
+    // 仕切り用の壁配置（通路部分をくり抜くため、ソリッドな長壁を複数に分割して開口部を作る）
     const walls = [
-      // 中央縦壁
-      { x: 0, z: 0, w: 1, d: 85 },
-      // 中央横壁
-      { x: -21.25, z: 0, w: 42.5, d: 1 },
-      { x: 21.25, z: 0, w: 42.5, d: 1 },
-      // ロビー境界壁 (z: -10m 付近をロビー境界に)
-      { x: -21.25, z: -10, w: 42.5, d: 1 },
-      { x: 21.25, z: -10, w: 42.5, d: 1 }
+      // 中央縦壁（北側: z: 10m〜42.5m, 南側: z: -42.5m〜-10m）
+      { x: 0, z: 26.25, w: 1, d: 32.5 },
+      { x: 0, z: -26.25, w: 1, d: 32.5 },
+      
+      // ロビー正面境界壁 (開口部を通るように調整)
+      // 左側部屋（カップ・ペンタクル・大アルカナ）の仕切り
+      { x: -30, z: -10, w: 20, d: 1 }, // 通路用に中間にスペースを作る (x: -20付近にドア)
+      { x: -10, z: -10, w: 15, d: 1 },
+      
+      // 右側部屋（ソード・ワンド）の仕切り
+      { x: 10, z: -10, w: 15, d: 1 },
+      { x: 30, z: -10, w: 20, d: 1 } // (x: 20付近にドア)
     ];
 
     walls.forEach((pos, idx) => {
