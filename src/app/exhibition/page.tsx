@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { TAROT_CARDS, TarotCard } from '@/data/artMuseumData';
+import { SUITS_DATA } from '@/data/suitsData';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
@@ -24,6 +25,7 @@ export default function ExhibitionPage() {
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedCardId, setSelectedCardId] = useState<string>('magician');
   const [isMobileModalOpen, setIsMobileModalOpen] = useState<boolean>(false);
+  const [activeSuitId, setActiveSuitId] = useState<string | null>(null);
   
   // 3D展示室用の選択中の部屋ステート ('lobby' | 'major' | 'wands' | 'cups' | 'swords' | 'pentacles')
   const [selected3DRoom, setSelected3DRoom] = useState<string>('lobby');
@@ -40,13 +42,14 @@ export default function ExhibitionPage() {
 
   const selectedCard = TAROT_CARDS.find(c => c.id === selectedCardId) || TAROT_CARDS[0];
 
-  const handleSelectCardFrom3D = (card: TarotCard) => {
+  const handleSelectCardFrom3D = useCallback((card: TarotCard) => {
     setSelectedCardId(card.id);
     setIsMobileModalOpen(true); // モバイル・レスポンシブ用にモーダルもトリガー
-  };
+  }, []);
 
   // 3D側の部屋ワープ時に、選択されたカードもそのカテゴリの最初のカードに追従して同期させる
-  const handleRoomChange3D = (room: string) => {
+  // useCallback でメモ化：GalleryViewer の useEffect が毎フレーム再実行されるのを防止する
+  const handleRoomChange3D = useCallback((room: string) => {
     setSelected3DRoom(room);
     
     // ロビー以外の個室に移動した際、そのエリアの代表的な初期カードを選択状態にする
@@ -64,7 +67,7 @@ export default function ExhibitionPage() {
         setSelectedCardId(targetCardId);
       }
     }
-  };
+  }, []);
 
   const categories: { key: Category; label: string }[] = [
     { key: 'all', label: 'すべて' },
@@ -336,6 +339,86 @@ export default function ExhibitionPage() {
           </div>
         </div>
       )}
+
+      {/* 4大エレメント（スート）の学習アーカイブ */}
+      <div className="border border-[#ebdcd0] bg-white rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+        <div className="text-center space-y-2 max-w-lg mx-auto">
+          <span className="text-[10px] font-mono tracking-widest text-[#b39369] uppercase font-bold">ELEMENTS ARCHIVE</span>
+          <h3 className="text-xl font-serif font-bold text-[#2b2825]">4大エレメント（スート）の探求</h3>
+          <p className="text-[11px] text-[#6e675f] leading-relaxed">
+            小アルカナを構成する4つのスートは、世界の成り立ちを表す古代の4大元素（火・水・風・地）に対応しています。
+            各エレメントをクリックして、その象徴的意味と自己探求への問いを学びましょう。
+          </p>
+          <div className="w-12 h-[1px] bg-[#ebdcd0] mx-auto mt-2"></div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {SUITS_DATA.map(suit => {
+            const isOpen = activeSuitId === suit.id;
+            return (
+              <div
+                key={suit.id}
+                className={`border rounded-2xl p-5 transition-all duration-300 ${suit.bgClass} ${suit.borderClass} ${
+                  isOpen ? 'border-[#b39369]/50 shadow-md' : 'border-[#ebdcd0]/50 hover:shadow-sm'
+                }`}
+              >
+                <button
+                  onClick={() => setActiveSuitId(isOpen ? null : suit.id)}
+                  className="w-full flex justify-between items-center text-left focus:outline-none"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl leading-none">{suit.icon}</span>
+                    <div>
+                      <h4 className="text-sm font-bold text-[#2b2825] flex items-center gap-2">
+                        {suit.name}
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-mono ${suit.badgeBg}`}>
+                          {suit.element} ({suit.elementEn})
+                        </span>
+                      </h4>
+                      <p className="text-[10px] text-[#8e857b] font-mono">{suit.nameEn}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-[#8c7e6c] font-bold">
+                    {isOpen ? '▲ 閉じる' : '▼ 詳しく見る'}
+                  </span>
+                </button>
+
+                {isOpen && (
+                  <div className="mt-4 border-t border-[#ebdcd0]/40 pt-4 space-y-4 text-xs text-[#4a453f] animate-fade-in">
+                    <div>
+                      <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要キーワード</h5>
+                      <div className="flex flex-wrap gap-1">
+                        {suit.keywords.map(kw => (
+                          <span key={kw} className="px-2 py-0.5 rounded-lg bg-[#f4efe8] text-[#6e675f] text-[9px]">
+                            #{kw}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">スートの象徴</h5>
+                      <p className="leading-relaxed text-[11px]">{suit.symbolism}</p>
+                    </div>
+
+                    <div>
+                      <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">心理的・哲学的解釈</h5>
+                      <p className="leading-relaxed text-[11px] text-[#6e675f] italic">{suit.psychological}</p>
+                    </div>
+
+                    <div className="bg-[#1a1816] text-[#f4efe8] rounded-xl p-3.5 border border-[#b39369]/30">
+                      <h5 className="text-[9px] font-mono font-bold tracking-wider text-[#b39369] uppercase mb-1">🧭 自己探求への問い</h5>
+                      <p className="leading-relaxed font-serif text-[11px] tracking-wide text-white/90">
+                        {suit.inquiry}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

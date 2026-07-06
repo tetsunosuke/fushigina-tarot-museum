@@ -38,7 +38,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "魔術師",
     "nameEn": "The Magician",
     "symbol": "I",
-    "imagePath": "/tarot/magician.jpg",
+    "imagePath": "/tarot/1.jpg",
     "caption": "机の前に立つ人物は、四つのスート（ワンド・カップ・ソード・ペンタクル）を手元に揃えている。上を指す右手と、下を指す左手。ウロボロスの帯が腰を巡る。この絵画が問うのは「始まりとは何か」という問いである。",
     "symbols": [
       {
@@ -182,7 +182,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "恋人",
     "nameEn": "The Lovers",
     "symbol": "VI",
-    "imagePath": "/tarot/lovers.jpg",
+    "imagePath": "/tarot/6.jpg",
     "caption": "二人の人物の上に天使が広げた翼を持つ。女性の背後には善悪知識の木と蛇、男性の背後には炎の木。中央に立つ天使は、どちらにも同じ距離から光を照らしている。この絵画が問うのは「選択とは誰のためのものか」という問いである。",
     "symbols": [
       {
@@ -326,7 +326,7 @@ export const TAROT_CARDS_78: TarotCard[] = [
     "name": "正義",
     "nameEn": "Justice",
     "symbol": "XI",
-    "imagePath": "/tarot/justice.jpg",
+    "imagePath": "/tarot/11.jpg",
     "caption": "玉座に座る人物が、右手に剣、左手に天秤を持つ。表情は揺るぎなく、眼差しは正面を向いている。後方には紫のカーテンが垂れ、頭上には四角い冠が輝く。この絵画が問うのは「あなたは誰の基準で自分を測っているか」という問いである。",
     "symbols": [
       {

@@ -26,217 +26,212 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     // 背景を美術館らしいシックなチャコールカラーに
     scene.clearColor = new BABYLON.Color4(0.12, 0.11, 0.10, 1.0);
 
-    // --- 選択した部屋に応じてカメラの初期位置を変える ---
-    // ロビーや展示室の「中央の定位置」にカメラを置く
-    let cameraStartPos = new BABYLON.Vector3(0, 1.7, -15); // デフォルトロビー位置
-    if (selectedRoom === 'major') cameraStartPos = new BABYLON.Vector3(-20, 1.7, 20);
-    else if (selectedRoom === 'wands') cameraStartPos = new BABYLON.Vector3(20, 1.7, 20);
-    else if (selectedRoom === 'cups') cameraStartPos = new BABYLON.Vector3(-20, 1.7, -20);
-    else if (selectedRoom === 'swords') cameraStartPos = new BABYLON.Vector3(20, 1.7, -20);
-    else if (selectedRoom === 'pentacles') cameraStartPos = new BABYLON.Vector3(-20, 1.7, 0);
+    // --- 選択した部屋に応じたカメラ位置・向きの切り替え ---
+    // 40m × 40m に縮小された空間に合わせ、カメラの初期座標と視線ターゲットを最適化
+    let cameraStartPos = new BABYLON.Vector3(0, 1.7, -10);
+    let cameraTarget = new BABYLON.Vector3(0, 1.7, -4.1); // デフォルト: 中央仕切り壁を向く
+
+    if (selectedRoom === 'major') {
+      cameraStartPos = new BABYLON.Vector3(0, 1.7, 14);
+      cameraTarget = new BABYLON.Vector3(0, 1.7, 20.0); // 北壁（大アルカナ）を向く
+    } else if (selectedRoom === 'wands') {
+      cameraStartPos = new BABYLON.Vector3(14, 1.7, 0);
+      cameraTarget = new BABYLON.Vector3(20.0, 1.7, 0); // 東壁（ワンド）を向く
+    } else if (selectedRoom === 'cups') {
+      cameraStartPos = new BABYLON.Vector3(-14, 1.7, 0);
+      cameraTarget = new BABYLON.Vector3(-20.0, 1.7, 0); // 西壁（カップ）を向く
+    } else if (selectedRoom === 'swords') {
+      cameraStartPos = new BABYLON.Vector3(10, 1.7, -14);
+      cameraTarget = new BABYLON.Vector3(10, 1.7, -20.0); // 南壁右側（ソード）を向く
+    } else if (selectedRoom === 'pentacles') {
+      cameraStartPos = new BABYLON.Vector3(-10, 1.7, -14);
+      cameraTarget = new BABYLON.Vector3(-10, 1.7, -20.0); // 南壁左側（ペンタクル）を向く
+    }
 
     const camera = new BABYLON.FreeCamera('freeCamera', cameraStartPos, scene);
     camera.attachControl(canvasRef.current, true);
+    camera.setTarget(cameraTarget);
     
-    // カメラの初期方向を設定 (ロビー時は正面の展示室方向を向くように設定)
-    if (selectedRoom === 'lobby') {
-      // 整列した看板（Z: -10.5mあたり）を正面から見るように設定
-      camera.setTarget(new BABYLON.Vector3(0, 1.7, -10.5));
-    }
-    
-    // 前後左右の「移動キー」をすべて空配列にし、キーボードによる移動（歩行）を完全に禁止する
+    // キーボードによる歩行移動を無効化
     camera.keysUp = [];
     camera.keysDown = [];
     camera.keysLeft = [];
     camera.keysRight = [];
-    
-    // 移動スピードを0に設定
     camera.speed = 0;
     camera.angularSensibility = 1000;
     
-    // キーボードの矢印キー（左右）や A / D キーでの「回転のみ」をイベント処理でハンドリングする
+    // 左右スライド並行移動のイベント処理
+    const moveStep = 0.5; // 1回のスライド移動距離
+
     const handleKeyDown = (evt: KeyboardEvent) => {
-      // 矢印左(37) または A(65)
-      if (evt.keyCode === 37 || evt.keyCode === 65) {
-        camera.cameraRotation.y -= 0.05;
-      }
-      // 矢印右(39) または D(68)
-      if (evt.keyCode === 39 || evt.keyCode === 68) {
-        camera.cameraRotation.y += 0.05;
+      const isLeft = evt.keyCode === 37 || evt.keyCode === 65;
+      const isRight = evt.keyCode === 39 || evt.keyCode === 68;
+
+      if (!isLeft && !isRight) return;
+
+      if (selectedRoom === 'lobby' || selectedRoom === 'major' || selectedRoom === 'swords' || selectedRoom === 'pentacles') {
+        const direction = (selectedRoom === 'swords' || selectedRoom === 'pentacles') ? (isLeft ? 1 : -1) : (isLeft ? -1 : 1);
+        
+        let newX = camera.position.x + moveStep * direction;
+        
+        // 限界値（クランプ範囲）を部屋ごとに分ける（仕切り壁の突き抜け防止）
+        if (selectedRoom === 'swords') {
+          newX = Math.max(0.5, Math.min(18, newX));
+        } else if (selectedRoom === 'pentacles') {
+          newX = Math.max(-18, Math.min(-0.5, newX));
+        } else { // lobby, major
+          newX = Math.max(-18, Math.min(18, newX));
+        }
+        
+        camera.position.x = newX;
+        
+        if (selectedRoom === 'lobby') {
+          camera.setTarget(new BABYLON.Vector3(newX, 1.7, -4.1));
+        } else if (selectedRoom === 'major') {
+          camera.setTarget(new BABYLON.Vector3(newX, 1.7, 20.0));
+        } else { // swords, pentacles
+          camera.setTarget(new BABYLON.Vector3(newX, 1.7, -20.0));
+        }
+      } else if (selectedRoom === 'wands' || selectedRoom === 'cups') {
+        const direction = selectedRoom === 'wands' ? (isLeft ? 1 : -1) : (isLeft ? -1 : 1);
+        
+        let newZ = camera.position.z + moveStep * direction;
+        // 限界値を Z: -16m 〜 16m にクランプ
+        newZ = Math.max(-16, Math.min(16, newZ));
+        camera.position.z = newZ;
+        
+        if (selectedRoom === 'wands') {
+          camera.setTarget(new BABYLON.Vector3(20.0, 1.7, newZ));
+        } else { // cups
+          camera.setTarget(new BABYLON.Vector3(-20.0, 1.7, newZ));
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     
-    // 衝突判定と重力（静止カメラなので不要ですが念のため残します）
     scene.collisionsEnabled = false;
     camera.checkCollisions = false;
     camera.applyGravity = false;
 
     // --- 照明の追加 ---
     const light1 = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
-    light1.intensity = 1.15; // 環境光を大幅に強化 (0.65 -> 1.15)
+    light1.intensity = 1.15;
     light1.specular = new BABYLON.Color3(0.3, 0.25, 0.2);
 
     const light2 = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(0, -1, 0.5), scene);
-    light2.intensity = 0.85; // 直行投射光を強化 (0.45 -> 0.85)
+    light2.intensity = 0.85;
     light2.diffuse = new BABYLON.Color3(1.0, 0.98, 0.92);
 
-    // --- ギズモ / 案内標識などを設置するマテリアル ---
-    const labelMat = new BABYLON.StandardMaterial('labelMat', scene);
-    labelMat.emissiveColor = new BABYLON.Color3(0.85, 0.72, 0.53); // 温かいゴールド
-
     // --- ギャラリー展示室（建築構造）の生成 ---
-    // ロビーと5つの部屋が入る全体床 (80m × 80m)
-    const floor = BABYLON.MeshBuilder.CreateGround('floor', { width: 85, height: 85 }, scene);
+    // 全体床 (コンパクトな 40m × 40m に縮小)
+    const floor = BABYLON.MeshBuilder.CreateGround('floor', { width: 40, height: 40 }, scene);
     const floorMaterial = new BABYLON.StandardMaterial('floorMat', scene);
     floorMaterial.diffuseColor = new BABYLON.Color3(0.18, 0.16, 0.14);
     floor.material = floorMaterial;
-    floor.checkCollisions = true;
 
     // 天井
-    const ceiling = BABYLON.MeshBuilder.CreatePlane('ceiling', { width: 85, height: 85 }, scene);
+    const ceiling = BABYLON.MeshBuilder.CreatePlane('ceiling', { width: 40, height: 40 }, scene);
     ceiling.rotation.x = Math.PI / 2;
-    ceiling.position.y = 5.5;
+    ceiling.position.y = 5.0;
     const ceilingMaterial = new BABYLON.StandardMaterial('ceilingMat', scene);
     ceilingMaterial.diffuseColor = new BABYLON.Color3(0.08, 0.07, 0.06);
     ceiling.material = ceilingMaterial;
 
-    // 外壁
-    const wallLeft = BABYLON.MeshBuilder.CreateBox('wallLeft', { width: 1, height: 5.5, depth: 85 }, scene);
-    wallLeft.position.set(-42.5, 2.75, 0);
-    wallLeft.checkCollisions = true;
-    
-    const wallRight = BABYLON.MeshBuilder.CreateBox('wallRight', { width: 1, height: 5.5, depth: 85 }, scene);
-    wallRight.position.set(42.5, 2.75, 0);
-    wallRight.checkCollisions = true;
-
-    const wallBack = BABYLON.MeshBuilder.CreateBox('wallBack', { width: 85, height: 5.5, depth: 1 }, scene);
-    wallBack.position.set(0, 2.75, 42.5);
-    wallBack.checkCollisions = true;
-
-    const wallFront = BABYLON.MeshBuilder.CreateBox('wallFront', { width: 85, height: 5.5, depth: 1 }, scene);
-    wallFront.position.set(0, 2.75, -42.5);
-    wallFront.checkCollisions = true;
-
+    // 外壁 (壁の位置を ±20m 面に配置)
     const wallsMat = new BABYLON.StandardMaterial('wallsMat', scene);
     wallsMat.diffuseColor = new BABYLON.Color3(0.13, 0.12, 0.11);
+
+    const wallLeft = BABYLON.MeshBuilder.CreateBox('wallLeft', { width: 1, height: 5.0, depth: 40 }, scene);
+    wallLeft.position.set(-20.0, 2.5, 0);
     wallLeft.material = wallsMat;
+    
+    const wallRight = BABYLON.MeshBuilder.CreateBox('wallRight', { width: 1, height: 5.0, depth: 40 }, scene);
+    wallRight.position.set(20.0, 2.5, 0);
     wallRight.material = wallsMat;
+
+    const wallBack = BABYLON.MeshBuilder.CreateBox('wallBack', { width: 40, height: 5.0, depth: 1 }, scene);
+    wallBack.position.set(0, 2.5, 20.0);
     wallBack.material = wallsMat;
+
+    const wallFront = BABYLON.MeshBuilder.CreateBox('wallFront', { width: 40, height: 5.0, depth: 1 }, scene);
+    wallFront.position.set(0, 2.5, -20.0);
     wallFront.material = wallsMat;
 
-    // --- ロビーと各展示室の仕切り壁の生成 ---
-    const partitionMaterial = new BABYLON.StandardMaterial('partitionMat', scene);
-    partitionMaterial.diffuseColor = new BABYLON.Color3(0.20, 0.18, 0.16);
+    // --- 中央の案内用仕切り壁の生成 ---
+    // 横幅 12m, 高さ 4.0m, 厚さ 0.8m
+    const centerWall = BABYLON.MeshBuilder.CreateBox('centerWall', { width: 12, height: 4.0, depth: 0.8 }, scene);
+    centerWall.position.set(0, 2.0, -4.0); // Z = -4.0 の位置
+    const centerWallMat = new BABYLON.StandardMaterial('centerWallMat', scene);
+    centerWallMat.diffuseColor = new BABYLON.Color3(0.20, 0.18, 0.16);
+    centerWall.material = centerWallMat;
 
-    // 仕切り用の壁配置（通路部分をくり抜くため、ソリッドな長壁を複数に分割して開口部を作る）
-    const walls = [
-      // 中央縦壁（北側: z: 10m〜42.5m, 南側: z: -42.5m〜-10m）
-      { x: 0, z: 26.25, w: 1, d: 32.5 },
-      { x: 0, z: -26.25, w: 1, d: 32.5 },
-      
-      // ロビー正面境界壁 (開口部を通るように調整)
-      // 左側部屋（カップ・ペンタクル・大アルカナ）の仕切り
-      { x: -30, z: -10, w: 20, d: 1 }, // 通路用に中間にスペースを作る (x: -20付近にドア)
-      { x: -10, z: -10, w: 15, d: 1 },
-      
-      // 右側部屋（ソード・ワンド）の仕切り
-      { x: 10, z: -10, w: 15, d: 1 },
-      { x: 30, z: -10, w: 20, d: 1 } // (x: 20付近にドア)
-    ];
+    // --- 南壁中央の仕切り壁の生成（ソードとペンタクルの境界） ---
+    // 横幅 0.8m, 高さ 5.0m, 奥行き 6.0m (Z = -20m 面から北方向に伸びる)
+    const dividerWall = BABYLON.MeshBuilder.CreateBox('dividerWall', { width: 0.8, height: 5.0, depth: 6.0 }, scene);
+    dividerWall.position.set(0, 2.5, -17.0);
+    dividerWall.material = wallsMat;
 
-    walls.forEach((pos, idx) => {
-      const w = BABYLON.MeshBuilder.CreateBox(`partWall_${idx}`, { width: pos.w, height: 5.5, depth: pos.d }, scene);
-      w.position.set(pos.x, 2.75, pos.z);
-      w.material = partitionMaterial;
-      w.checkCollisions = true;
-    });
-
-    // --- 各展示室への扉 / ワープポータルを設置 ---
-    // ロビーから案内板を正面から読めるよう、ロビー内部の円形（Z: -12m〜-10mあたり）に配置し、看板がすべて中央（0, 1.7, -15）側を向くように設定します。
+    // --- 案内用壁掛けカード（ポータル）の設置（中央の島壁の南面に配置、間隔 2.0m） ---
     const roomPortals = [
-      { name: '大アルカナ室', key: 'major', x: -3.5, z: -10.5, rotationY: Math.PI / 6 },
-      { name: 'ワンド室', key: 'wands', x: 3.5, z: -10.5, rotationY: -Math.PI / 6 },
-      { name: 'カップ室', key: 'cups', x: -5.5, z: -12.5, rotationY: Math.PI / 3 },
-      { name: 'ソード室', key: 'swords', x: 5.5, z: -12.5, rotationY: -Math.PI / 3 },
-      { name: 'ペンタクル室', key: 'pentacles', x: -6.5, z: -14.5, rotationY: Math.PI / 2 },
-      { name: 'ロビーへ戻る', key: 'lobby', x: 0, z: -25.5, rotationY: 0 } // ロビー以外の部屋用
+      { name: '大アルカナ', key: 'major',     x: -4.0 },
+      { name: 'ワンド',     key: 'wands',     x: -2.0 },
+      { name: 'カップ',     key: 'cups',      x:  0.0 },
+      { name: 'ソード',     key: 'swords',    x:  2.0 },
+      { name: 'ペンタクル', key: 'pentacles', x:  4.0 },
     ];
+
+    const previewImageMap: Record<string, string> = {
+      major:     '/tarot/1.jpg',
+      wands:     '/tarot/w1.jpg',
+      cups:      '/tarot/c1.jpg',
+      swords:    '/tarot/s1.jpg',
+      pentacles: '/tarot/p1.jpg',
+    };
 
     roomPortals.forEach(portal => {
-      // 案内看板として立体柱を設置
-      const pillar = BABYLON.MeshBuilder.CreateCylinder(`portal_${portal.key}`, { height: 2.2, diameter: 0.8 }, scene);
-      pillar.position.set(portal.x, 1.1, portal.z);
-      
-      const pillarMat = new BABYLON.StandardMaterial(`pillarMat_${portal.key}`, scene);
-      pillarMat.diffuseColor = portal.key === 'lobby' ? new BABYLON.Color3(0.5, 0.2, 0.2) : new BABYLON.Color3(0.65, 0.52, 0.35);
-      pillarMat.emissiveColor = portal.key === 'lobby' ? new BABYLON.Color3(0.15, 0.05, 0.05) : new BABYLON.Color3(0.1, 0.08, 0.05);
-      pillar.material = pillarMat;
-      pillar.metadata = { type: 'portal', key: portal.key, name: portal.name };
+      const portalZ = -4.41; // Z: -4.0 の壁面より少し手前
 
-      // 看板テキストボード（看板の正面をプレイヤー向きに回転）
-      const sign = BABYLON.MeshBuilder.CreatePlane(`sign_${portal.key}`, { width: 1.2, height: 0.5 }, scene);
-      sign.position.set(portal.x, 2.0, portal.z);
-      sign.rotation.y = (portal.rotationY || 0) + Math.PI; // プレイヤーの方向（手前）を向くように設定
-      
-      // DynamicTextureによるテキスト描画
-      const signTexture = GUI.AdvancedDynamicTexture.CreateForMesh(sign, 512, 256);
-      
+      // 額縁の生成
+      const frame = BABYLON.MeshBuilder.CreateBox(`lobby_preview_frame_${portal.key}`, { width: 0.8, height: 1.25, depth: 0.06 }, scene);
+      frame.position.set(portal.x, 2.2, portalZ);
+      const frameMat = new BABYLON.StandardMaterial(`lobby_preview_frame_mat_${portal.key}`, scene);
+      frameMat.diffuseColor = new BABYLON.Color3(0.08, 0.06, 0.04);
+      frame.material = frameMat;
+
+      // キャンバス
+      const canvas = BABYLON.MeshBuilder.CreatePlane(`lobby_preview_canvas_${portal.key}`, { width: 0.72, height: 1.17 }, scene);
+      canvas.position.set(portal.x, 2.2, portalZ - 0.04);
+      canvas.rotation.y = 0; // 南向き（カメラ正面）
+
+      const artMat = new BABYLON.StandardMaterial(`lobby_preview_art_mat_${portal.key}`, scene);
+      artMat.diffuseTexture = new BABYLON.Texture(previewImageMap[portal.key], scene);
+      canvas.material = artMat;
+      canvas.metadata = { type: 'lobby_portal_card', key: portal.key };
+
+      // 案内看板テキスト
+      const sign = BABYLON.MeshBuilder.CreatePlane(`sign_${portal.key}`, { width: 0.8, height: 0.22 }, scene);
+      sign.position.set(portal.x, 1.35, portalZ - 0.02);
+      sign.rotation.y = 0;
+
+      const signTexture = GUI.AdvancedDynamicTexture.CreateForMesh(sign, 256, 64);
       const textBlock = new GUI.TextBlock();
       textBlock.text = portal.name;
-      textBlock.color = "#f4efe8"; // 明るいアンティークベージュ
-      textBlock.fontSize = 44;
-      textBlock.fontFamily = "serif";
-      textBlock.fontWeight = "bold";
-      
-      // 看板全体の背景色設定
+      textBlock.color = '#f4efe8';
+      textBlock.fontSize = 24;
+      textBlock.fontFamily = 'serif';
+      textBlock.fontWeight = 'bold';
+
       const signBg = new GUI.Rectangle();
-      signBg.background = "#1a1816"; // シックなダーク背景
-      signBg.thickness = 2;
-      signBg.color = portal.key === 'lobby' ? "#a63c3c" : "#b39369"; // 枠線カラー
+      signBg.background = '#1a1816';
+      signBg.thickness = 1.0;
+      signBg.color = '#b39369';
       signBg.addControl(textBlock);
-      
       signTexture.addControl(signBg);
 
-      // --- 【要件追加】ロビーの看板の上に、対応する展示室を象徴する画像（5枚）を飾る ---
-      if (portal.key !== 'lobby') {
-        // 各展示室の「象徴的なカード画像パス」をマッピング
-        const previewImageMap: Record<string, string> = {
-          major: "/tarot/magician.jpg", // 大アルカナ
-          wands: "/tarot/w1.jpg",      // ワンド
-          cups: "/tarot/c1.jpg",       // カップ
-          swords: "/tarot/s1.jpg",     // ソード
-          pentacles: "/tarot/p1.jpg"   // ペンタクル
-        };
-
-        // 看板の真上（Y: 2.85m付近）にミニ額縁として画像を飾る
-        const frame = BABYLON.MeshBuilder.CreateBox(`lobby_preview_frame_${portal.key}`, { width: 0.9, height: 1.2, depth: 0.1 }, scene);
-        frame.position.set(portal.x, 2.85, portal.z);
-        frame.rotation.y = (portal.rotationY || 0) + Math.PI; // 看板と同じ回転方向
-        const frameMat = new BABYLON.StandardMaterial(`lobby_preview_frame_mat_${portal.key}`, scene);
-        frameMat.diffuseColor = new BABYLON.Color3(0.08, 0.06, 0.04);
-        frame.material = frameMat;
-
-        const canvas = BABYLON.MeshBuilder.CreatePlane(`lobby_preview_canvas_${portal.key}`, { width: 0.8, height: 1.1 }, scene);
-        // プレイヤーの方向（手前）へ向かうベクトルに沿って少し手前に配置
-        const rad = (portal.rotationY || 0) + Math.PI;
-        canvas.position.set(
-          portal.x + Math.sin(rad) * -0.06, // 額縁の面から少し手前に浮かせる
-          2.85,
-          portal.z + Math.cos(rad) * -0.06
-        );
-        canvas.rotation.y = rad; // プレイヤーの方向を向かせる
-
-        const artMat = new BABYLON.StandardMaterial(`lobby_preview_art_mat_${portal.key}`, scene);
-        artMat.diffuseTexture = new BABYLON.Texture(previewImageMap[portal.key], scene);
-        canvas.material = artMat;
-
-        // メタデータに "lobby_portal_card" として登録し、クリック時に部屋ワープをトリガーさせる
-        canvas.metadata = { type: 'lobby_portal_card', key: portal.key };
-      }
+      sign.metadata = { type: 'portal', key: portal.key, name: portal.name };
     });
 
-    // --- 78枚のタロットアートの分類配置 ---
+    // --- 78枚のタロットカードの配置分類 ---
     setLoadingProgress('絵画を展示中...');
 
     const categorizedCards = {
@@ -248,8 +243,7 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     };
 
     TAROT_CARDS.forEach(card => {
-      const num = parseInt(card.symbol);
-      const isMajor = !isNaN(num) || ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'].includes(card.symbol);
+      const isMajor = !card.id.startsWith('wand') && !card.id.startsWith('cup') && !card.id.startsWith('sword') && !card.id.startsWith('pentacle');
       if (isMajor) {
         categorizedCards.major.push(card);
       } else if (card.id.startsWith('wand')) {
@@ -263,52 +257,61 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
       }
     });
 
-    // 展示個室での円状配置のレンダリング
-    const renderRoom = (cards: TarotCard[], centerOffset: { x: number; z: number }) => {
-      const total = cards.length;
+    // --- 78枚のアートを外壁に壁掛け配置する関数 ---
+    const renderWallGroup = (cards: TarotCard[], startX: number, startZ: number, stepX: number, stepZ: number, faceAngle: number) => {
       cards.forEach((card, index) => {
-        const angle = (index / total) * Math.PI * 2;
-        const radius = 8.0;
-
-        const x = centerOffset.x + Math.sin(angle) * radius;
-        const z = centerOffset.z + Math.cos(angle) * radius;
+        const x = startX + stepX * index;
+        const z = startZ + stepZ * index;
         const y = 2.0;
 
-        // フレーム
-        const frame = BABYLON.MeshBuilder.CreateBox(`frame_${card.id}`, { width: 1.6, height: 2.5, depth: 0.12 }, scene);
+        // 額縁 (幅1.2m, 高さ1.9m)
+        const frame = BABYLON.MeshBuilder.CreateBox(`frame_${card.id}`, { width: 1.2, height: 1.9, depth: 0.08 }, scene);
         frame.position.set(x, y, z);
-        frame.rotation.y = angle + Math.PI;
+        frame.rotation.y = faceAngle;
 
         const frameMat = new BABYLON.StandardMaterial(`frameMat_${card.id}`, scene);
         frameMat.diffuseColor = new BABYLON.Color3(0.08, 0.06, 0.04);
         frame.material = frameMat;
-        frame.checkCollisions = true;
 
-        // キャンバス
-        const canvas = BABYLON.MeshBuilder.CreatePlane(`canvas_${card.id}`, { width: 1.45, height: 2.3 }, scene);
-        canvas.position.set(x + Math.sin(angle) * -0.07, y, z + Math.cos(angle) * -0.07);
-        canvas.rotation.y = angle;
+        // キャンバス (幅1.1m, 高さ1.75m)
+        const canvas = BABYLON.MeshBuilder.CreatePlane(`canvas_${card.id}`, { width: 1.1, height: 1.75 }, scene);
+        const offsetDist = 0.05;
+        const offsetX = Math.sin(faceAngle) * offsetDist;
+        const offsetZ = Math.cos(faceAngle) * offsetDist;
+        
+        canvas.position.set(x + offsetX, y, z + offsetZ);
+        canvas.rotation.y = faceAngle + Math.PI;
 
         const artMat = new BABYLON.StandardMaterial(`artMat_${card.id}`, scene);
         artMat.diffuseTexture = new BABYLON.Texture(card.imagePath, scene);
         canvas.material = artMat;
         canvas.metadata = { type: 'card', data: card };
 
-        // スポットライト
-        const lamp = BABYLON.MeshBuilder.CreateSphere(`lamp_${card.id}`, { diameter: 0.12 }, scene);
-        lamp.position.set(x + Math.sin(angle) * -0.3, y + 1.4, z + Math.cos(angle) * -0.3);
+        // 各絵画の上の小さなスポットライト
+        const lamp = BABYLON.MeshBuilder.CreateSphere(`lamp_${card.id}`, { diameter: 0.10 }, scene);
+        const lampOffsetX = Math.sin(faceAngle) * 0.25;
+        const lampOffsetZ = Math.cos(faceAngle) * 0.25;
+        lamp.position.set(x + lampOffsetX, y + 1.1, z + lampOffsetZ);
         const lampMat = new BABYLON.StandardMaterial(`lampMat_${card.id}`, scene);
         lampMat.emissiveColor = new BABYLON.Color3(0.95, 0.9, 0.75);
         lamp.material = lampMat;
       });
     };
 
-    // 5つの部屋それぞれに円状壁面配置
-    renderRoom(categorizedCards.major, { x: -20, z: 20 });
-    renderRoom(categorizedCards.wands, { x: 20, z: 20 });
-    renderRoom(categorizedCards.cups, { x: -20, z: -20 });
-    renderRoom(categorizedCards.swords, { x: 20, z: -20 });
-    renderRoom(categorizedCards.pentacles, { x: -20, z: 0 });
+    // 1. 北壁（大アルカナ 22枚）: Z = 19.3m 面 (1.7m 間隔)
+    renderWallGroup(categorizedCards.major, -17.85, 19.3, 1.7, 0, Math.PI); // 南向き
+
+    // 2. 東壁（ワンド 14枚）: X = 19.3m 面 (2.3m 間隔)
+    renderWallGroup(categorizedCards.wands, 19.3, 14.95, 0, -2.3, -Math.PI / 2); // 西向き
+
+    // 3. 西壁（カップ 14枚）: X = -19.3m 面 (2.3m 間隔)
+    renderWallGroup(categorizedCards.cups, -19.3, 14.95, 0, -2.3, Math.PI / 2); // 東向き
+
+    // 4. 南壁・右半分（ソード 14枚）: Z = -19.3m 面 (1.1m 間隔)
+    renderWallGroup(categorizedCards.swords, 2.0, -19.3, 1.1, 0, 0); // 北向き
+
+    // 5. 南壁・左半分（ペンタクル 14枚）: Z = -19.3m 面 (1.1m 間隔)
+    renderWallGroup(categorizedCards.pentacles, -16.3, -19.3, 1.1, 0, 0); // 北向き
 
     // --- クリック（タップ）によるイベント検知 ---
     scene.onPointerDown = (evt, pickResult) => {
@@ -320,7 +323,6 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
           if (meta.type === 'card') {
             onSelectCard(meta.data);
           } else if (meta.type === 'portal' || meta.type === 'lobby_portal_card') {
-            // 看板・柱、あるいはロビーの5枚のポータル絵画をクリックしたら部屋を切り替える
             onChangeRoom(meta.key);
           }
         }
@@ -331,9 +333,9 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
 
     // --- アニメーションループ ---
     engine.runRenderLoop(() => {
-      // 縦方向の首振り（ピッチ・ロール）を完全にロックし、左右の回転（ヨー）のみを許可する
       camera.rotation.x = 0;
       camera.rotation.z = 0;
+      camera.cameraRotation.x = 0; // マウス・スマホでの縦ドラッグ完全無効化
       scene.render();
     });
 
