@@ -23,6 +23,7 @@ export default function ExhibitionPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('3d');
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedCardId, setSelectedCardId] = useState<string>('magician');
+  const [isMobileModalOpen, setIsMobileModalOpen] = useState<boolean>(false);
 
   // カテゴリに応じたフィルタリング
   const filteredCards = TAROT_CARDS.filter(card => {
@@ -38,6 +39,7 @@ export default function ExhibitionPage() {
 
   const handleSelectCardFrom3D = (card: TarotCard) => {
     setSelectedCardId(card.id);
+    setIsMobileModalOpen(true); // モバイル・レスポンシブ用にモーダルもトリガー
   };
 
   const categories: { key: Category; label: string }[] = [
@@ -91,8 +93,8 @@ export default function ExhibitionPage() {
             <GalleryViewer onSelectCard={handleSelectCardFrom3D} />
           </div>
 
-          {/* 右側：選択したカードの解説パネル */}
-          <div className="lg:col-span-4 border border-[#ebdcd0] bg-white rounded-3xl p-6 shadow-sm space-y-6">
+          {/* 右側（PC用デスクトップ表示）：選択したカードの解説パネル */}
+          <div className="hidden lg:block lg:col-span-4 border border-[#ebdcd0] bg-white rounded-3xl p-6 shadow-sm space-y-6">
             <div className="text-center space-y-2">
               <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
               <div className="relative w-32 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow bg-[#faf8f5]">
@@ -134,6 +136,60 @@ export default function ExhibitionPage() {
               </div>
             </div>
           </div>
+
+          {/* モバイル/タブレット用前面ポップアップモーダル */}
+          {isMobileModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in">
+              <div className="bg-white w-full max-w-md rounded-3xl border border-[#ebdcd0] p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
+                <button
+                  onClick={() => setIsMobileModalOpen(false)}
+                  className="absolute top-4 right-4 text-[#8e857b] hover:text-[#2b2825] text-lg font-bold w-8 h-8 rounded-full bg-[#f4efe8] flex items-center justify-center"
+                >
+                  ✕
+                </button>
+                <div className="text-center space-y-2 pt-2">
+                  <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
+                  <div className="relative w-28 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow">
+                    <Image
+                      src={selectedCard.imagePath}
+                      alt={selectedCard.name}
+                      fill
+                      sizes="110px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
+                  <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
+                </div>
+
+                <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4 text-left">
+                  <div>
+                    <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">キャプション</h5>
+                    <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
+                      {selectedCard.caption}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要なシンボルと解釈</h5>
+                    <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                      {selectedCard.symbols.map(sym => (
+                        <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
+                          <div className="flex justify-between items-center text-[10px]">
+                            <span className="font-bold text-[#2b2825]">{sym.name}</span>
+                            <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
+                          </div>
+                          <p className="text-[9px] text-[#6e675f] leading-relaxed">
+                            {sym.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
