@@ -40,8 +40,8 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     
     // カメラの初期方向を設定 (ロビー時は正面の展示室方向を向くように設定)
     if (selectedRoom === 'lobby') {
-      // 少し斜め左（大アルカナ室への扉看板がある方向）を最初に向くようにして、通路が見えるようにする
-      camera.setTarget(new BABYLON.Vector3(-15, 1.7, -9.5));
+      // 整列した看板（Z: -10.5mあたり）を正面から見るように設定
+      camera.setTarget(new BABYLON.Vector3(0, 1.7, -10.5));
     }
     
     // 前後左右の「移動キー」をすべて空配列にし、キーボードによる移動（歩行）を完全に禁止する
@@ -153,13 +153,14 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     });
 
     // --- 各展示室への扉 / ワープポータルを設置 ---
+    // ロビーから案内板を正面から読めるよう、ロビー内部の円形（Z: -12m〜-10mあたり）に配置し、看板がすべて中央（0, 1.7, -15）側を向くように設定します。
     const roomPortals = [
-      { name: '大アルカナ室', key: 'major', x: -20, z: -9.5, destX: -20, destZ: 15 },
-      { name: 'ワンド室', key: 'wands', x: 20, z: -9.5, destX: 20, destZ: 15 },
-      { name: 'カップ室', key: 'cups', x: -20, z: -10.5, destX: -20, destZ: -25 },
-      { name: 'ソード室', key: 'swords', x: 20, z: -10.5, destX: 20, destZ: -25 },
-      { name: 'ペンタクル室', key: 'pentacles', x: -20, z: -0.5, destX: -20, destZ: -5 },
-      { name: 'ロビーへ戻る', key: 'lobby', x: 0, z: -14, destX: 0, destZ: -15 }
+      { name: '大アルカナ室', key: 'major', x: -3.5, z: -10.5, rotationY: Math.PI / 6 },
+      { name: 'ワンド室', key: 'wands', x: 3.5, z: -10.5, rotationY: -Math.PI / 6 },
+      { name: 'カップ室', key: 'cups', x: -5.5, z: -12.5, rotationY: Math.PI / 3 },
+      { name: 'ソード室', key: 'swords', x: 5.5, z: -12.5, rotationY: -Math.PI / 3 },
+      { name: 'ペンタクル室', key: 'pentacles', x: -6.5, z: -14.5, rotationY: Math.PI / 2 },
+      { name: 'ロビーへ戻る', key: 'lobby', x: 0, z: -25.5, rotationY: 0 } // ロビー以外の部屋用
     ];
 
     roomPortals.forEach(portal => {
@@ -168,15 +169,15 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
       pillar.position.set(portal.x, 1.1, portal.z);
       
       const pillarMat = new BABYLON.StandardMaterial(`pillarMat_${portal.key}`, scene);
-      // ロビーへ戻るポータルは赤め、その他はゴールドに
       pillarMat.diffuseColor = portal.key === 'lobby' ? new BABYLON.Color3(0.5, 0.2, 0.2) : new BABYLON.Color3(0.65, 0.52, 0.35);
       pillarMat.emissiveColor = portal.key === 'lobby' ? new BABYLON.Color3(0.15, 0.05, 0.05) : new BABYLON.Color3(0.1, 0.08, 0.05);
       pillar.material = pillarMat;
       pillar.metadata = { type: 'portal', key: portal.key, name: portal.name };
 
-      // 看板テキストボード
+      // 看板テキストボード（看板の正面をプレイヤー向きに回転）
       const sign = BABYLON.MeshBuilder.CreatePlane(`sign_${portal.key}`, { width: 1.2, height: 0.5 }, scene);
-      sign.position.set(portal.x, 2.0, portal.z - 0.41);
+      sign.position.set(portal.x, 2.0, portal.z);
+      sign.rotation.y = (portal.rotationY || 0) + Math.PI; // プレイヤーの方向（手前）を向くように設定
       
       // DynamicTextureによるテキスト描画
       const signTexture = GUI.AdvancedDynamicTexture.CreateForMesh(sign, 512, 256);
