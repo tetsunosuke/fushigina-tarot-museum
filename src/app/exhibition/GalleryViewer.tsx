@@ -194,11 +194,11 @@ export default function GalleryViewer({ onSelectCard }: GalleryProps) {
         // キャンバス（絵のテクスチャ貼り付け部）
         const canvas = BABYLON.MeshBuilder.CreatePlane(`canvas_${card.id}`, { width: 1.45, height: 2.3 }, scene);
         canvas.position.set(x + Math.sin(angle) * -0.07, y, z + Math.cos(angle) * -0.07);
-        canvas.rotation.y = angle + Math.PI; // カメラのいる部屋の中心に向くように回転
-
+        canvas.rotation.y = angle; // 中心（カメラ側）を向くように回転
+        
         const artMat = new BABYLON.StandardMaterial(`artMat_${card.id}`, scene);
         artMat.diffuseTexture = new BABYLON.Texture(card.imagePath, scene);
-        artMat.backFaceCulling = false;
+        artMat.backFaceCulling = true; // 正しい面だけを描画して不整合を解消
         canvas.material = artMat;
         canvas.metadata = card;
 
