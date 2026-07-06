@@ -74,12 +74,12 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
 
     // --- 照明の追加 ---
     const light1 = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
-    light1.intensity = 0.65;
-    light1.specular = new BABYLON.Color3(0.2, 0.15, 0.1);
+    light1.intensity = 1.15; // 環境光を大幅に強化 (0.65 -> 1.15)
+    light1.specular = new BABYLON.Color3(0.3, 0.25, 0.2);
 
     const light2 = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(0, -1, 0.5), scene);
-    light2.intensity = 0.45;
-    light2.diffuse = new BABYLON.Color3(1.0, 0.95, 0.85);
+    light2.intensity = 0.85; // 直行投射光を強化 (0.45 -> 0.85)
+    light2.diffuse = new BABYLON.Color3(1.0, 0.98, 0.92);
 
     // --- ギズモ / 案内標識などを設置するマテリアル ---
     const labelMat = new BABYLON.StandardMaterial('labelMat', scene);
