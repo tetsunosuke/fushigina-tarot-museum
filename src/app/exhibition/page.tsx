@@ -45,6 +45,27 @@ export default function ExhibitionPage() {
     setIsMobileModalOpen(true); // モバイル・レスポンシブ用にモーダルもトリガー
   };
 
+  // 3D側の部屋ワープ時に、選択されたカードもそのカテゴリの最初のカードに追従して同期させる
+  const handleRoomChange3D = (room: string) => {
+    setSelected3DRoom(room);
+    
+    // ロビー以外の個室に移動した際、そのエリアの代表的な初期カードを選択状態にする
+    if (room !== 'lobby') {
+      const roomToCategoryMap: Record<string, string> = {
+        major: 'magician',  // 大アルカナ: 魔術師
+        wands: 'wand-1',    // ワンド: エース
+        cups: 'cup-1',      // カップ: エース
+        swords: 'sword-1',  // ソード: エース
+        pentacles: 'pentacle-1' // ペンタクル: エース
+      };
+      
+      const targetCardId = roomToCategoryMap[room];
+      if (targetCardId) {
+        setSelectedCardId(targetCardId);
+      }
+    }
+  };
+
   const categories: { key: Category; label: string }[] = [
     { key: 'all', label: 'すべて' },
     { key: 'major', label: '大アルカナ' },
@@ -96,7 +117,7 @@ export default function ExhibitionPage() {
             <GalleryViewer
               onSelectCard={handleSelectCardFrom3D}
               selectedRoom={selected3DRoom}
-              onChangeRoom={(room) => setSelected3DRoom(room)}
+              onChangeRoom={handleRoomChange3D}
             />
             
             <div className="bg-[#fcfaf7] border border-[#ebdcd0]/60 px-4 py-3 rounded-2xl text-[10px] text-[#6e675f] flex flex-col sm:flex-row justify-between items-center gap-2 shadow-inner">
