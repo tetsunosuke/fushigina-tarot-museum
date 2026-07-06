@@ -141,14 +141,16 @@ export default function GalleryViewer({ onSelectCard }: GalleryProps) {
       frame.material = frameMat;
       frame.checkCollisions = true;
 
+
       // キャンバス（絵のテクスチャ貼り付け部）
       const canvas = BABYLON.MeshBuilder.CreatePlane(`canvas_${card.id}`, { width: 1.45, height: 2.3 }, scene);
       canvas.position.set(x, y, z - 0.07); // フレームの少し手前に配置
-      canvas.rotation.y = Math.PI; // 正面にテクスチャを向ける
-
+      canvas.rotation.y = 0; // カメラ側（手前）に向くように設定
+      
       const artMat = new BABYLON.StandardMaterial(`artMat_${card.id}`, scene);
       // ローカルのタロット画像をテクスチャとしてロード
       artMat.diffuseTexture = new BABYLON.Texture(card.imagePath, scene);
+      artMat.backFaceCulling = false; // 裏面も考慮して表示を保証
       canvas.material = artMat;
 
       // メタデータをメッシュに保持
