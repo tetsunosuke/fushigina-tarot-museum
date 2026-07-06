@@ -250,7 +250,7 @@ export default function WorkshopPage() {
       }
 
       // 8. 送信したアドバイス（ハイライト）のログ
-      const highlights = activeCase.status !== 'unresolved' ? activeCase.sentHighlights : [];
+      const highlights: string[] = activeCase.status !== 'unresolved' ? (activeCase.sentHighlights ?? []) : [];
       if (highlights && highlights.length > 0) {
         chatMessages.push({
           sender: 'player',
