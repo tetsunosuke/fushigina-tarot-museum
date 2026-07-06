@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { TAROT_CARDS, TarotCard } from '@/data/artMuseumData';
 import { SUITS_DATA } from '@/data/suitsData';
+import { useGameState } from '../context';
+import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
@@ -21,14 +23,27 @@ type ViewMode = '3d' | 'archive';
 type Category = 'all' | 'major' | 'wands' | 'cups' | 'swords' | 'pentacles';
 
 export default function ExhibitionPage() {
+  const { completedCases } = useGameState();
   const [viewMode, setViewMode] = useState<ViewMode>('3d');
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedCardId, setSelectedCardId] = useState<string>('magician');
   const [isMobileModalOpen, setIsMobileModalOpen] = useState<boolean>(false);
   const [activeSuitId, setActiveSuitId] = useState<string | null>(null);
+  const [showBroadcastToast, setShowBroadcastToast] = useState(false);
   
   // 3D展示室用の選択中の部屋ステート ('lobby' | 'major' | 'wands' | 'cups' | 'swords' | 'pentacles')
   const [selected3DRoom, setSelected3DRoom] = useState<string>('lobby');
+
+  useEffect(() => {
+    // すでにワークショップを全員解決している場合は案内しない
+    if (completedCases.length >= 3) return;
+
+    const timer = setTimeout(() => {
+      setShowBroadcastToast(true);
+    }, 10000); // 展示室に入って10秒後に表示
+
+    return () => clearTimeout(timer);
+  }, [completedCases]);
 
   // カテゴリに応じたフィルタリング
   const filteredCards = TAROT_CARDS.filter(card => {
@@ -82,9 +97,9 @@ export default function ExhibitionPage() {
     <div className="space-y-8 animate-fade-in max-w-7xl mx-auto">
       {/* ページヘッダー */}
       <div className="text-center space-y-2">
-        <span className="text-[10px] font-mono tracking-widest text-[#b39369] uppercase font-bold">ONLINE MUSEUM ARCHIVE</span>
+        <span className="text-xs font-mono tracking-widest text-[#b39369] uppercase font-bold">ONLINE MUSEUM ARCHIVE</span>
         <h2 className="text-3xl font-serif font-bold text-[#2b2825]">オンライン展示室</h2>
-        <p className="text-xs text-[#6e675f] max-w-md mx-auto leading-relaxed">
+        <p className="text-sm text-[#6e675f] max-w-md mx-auto leading-relaxed">
           タロットアーカイブ。それぞれのシンボルが持つ本来の意味や、自己探求を促す哲学的解釈を鑑賞いただけます。
         </p>
         <div className="w-16 h-[1px] bg-[#b39369] mx-auto mt-4"></div>
@@ -123,16 +138,16 @@ export default function ExhibitionPage() {
               onChangeRoom={handleRoomChange3D}
             />
             
-            <div className="bg-[#fcfaf7] border border-[#ebdcd0]/60 px-4 py-3 rounded-2xl text-[10px] text-[#6e675f] flex flex-col sm:flex-row justify-between items-center gap-2 shadow-inner">
+            <div className="bg-[#fcfaf7] border border-[#ebdcd0]/60 px-4 py-3 rounded-2xl text-xs text-[#6e675f] flex flex-col sm:flex-row justify-between items-center gap-2 shadow-inner">
               <span>🎮 <strong>操作:</strong> 左右矢印キー(またはA/Dキー) ＆ マウス・スマホドラッグで「左右の視点回転（首振り）」</span>
-              <span className="text-[#8c6239] font-bold">🏛️ 中央の定位置から、周囲360度の壁面に並ぶカードを見渡せます</span>
+              <span className="text-[#8c6239] font-bold">🏛️ 定位置から、周囲360度の壁面に並ぶカードを見渡せます</span>
             </div>
           </div>
 
           {/* 右側（PC用デスクトップ表示）：選択したカードの解説パネル */}
           <div className="hidden lg:block lg:col-span-4 border border-[#ebdcd0] bg-white rounded-3xl p-6 shadow-sm space-y-6">
             <div className="text-center space-y-2">
-              <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
+              <span className="text-xs font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
               <div className="relative w-32 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow bg-[#faf8f5]">
                 <Image
                   src={selectedCard.imagePath}
@@ -143,27 +158,27 @@ export default function ExhibitionPage() {
                 />
               </div>
               <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
-              <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
+              <p className="text-sm text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
             </div>
 
             <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4">
               <div>
-                <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1.5">キャプション</h5>
-                <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
+                <h5 className="text-xs font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1.5">キャプション</h5>
+                <p className="text-xs text-[#4a453f] leading-relaxed italic font-serif">
                   {selectedCard.caption}
                 </p>
               </div>
 
               <div>
-                <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-2">主要なシンボルと哲学的解釈</h5>
+                <h5 className="text-xs font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-2">主要なシンボルと哲学的解釈</h5>
                 <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
                   {selectedCard.symbols.map(sym => (
                     <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
-                      <div className="flex justify-between items-center text-[10px]">
+                      <div className="flex justify-between items-center text-xs">
                         <span className="font-bold text-[#2b2825]">{sym.name}</span>
-                        <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
+                        <span className="text-[10px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
                       </div>
-                      <p className="text-[9px] text-[#6e675f] leading-relaxed">
+                      <p className="text-[11px] text-[#6e675f] leading-relaxed">
                         {sym.description}
                       </p>
                     </div>
@@ -184,7 +199,7 @@ export default function ExhibitionPage() {
                   ✕
                 </button>
                 <div className="text-center space-y-2 pt-2">
-                  <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
+                  <span className="text-xs font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
                   <div className="relative w-28 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow">
                     <Image
                       src={selectedCard.imagePath}
@@ -195,27 +210,27 @@ export default function ExhibitionPage() {
                     />
                   </div>
                   <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
-                  <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
+                  <p className="text-sm text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
                 </div>
 
                 <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4 text-left">
                   <div>
-                    <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">キャプション</h5>
-                    <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
+                    <h5 className="text-xs font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">キャプション</h5>
+                    <p className="text-xs text-[#4a453f] leading-relaxed italic font-serif">
                       {selectedCard.caption}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要なシンボルと解釈</h5>
+                    <h5 className="text-xs font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要なシンボルと解釈</h5>
                     <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
                       {selectedCard.symbols.map(sym => (
                         <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
-                          <div className="flex justify-between items-center text-[10px]">
+                          <div className="flex justify-between items-center text-xs">
                             <span className="font-bold text-[#2b2825]">{sym.name}</span>
-                            <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
+                            <span className="text-[10px] font-mono px-1.5 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
                           </div>
-                          <p className="text-[9px] text-[#6e675f] leading-relaxed">
+                          <p className="text-[11px] text-[#6e675f] leading-relaxed">
                             {sym.description}
                           </p>
                         </div>
@@ -263,7 +278,7 @@ export default function ExhibitionPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* 左側：カードリスト */}
             <div className="lg:col-span-4 border border-[#ebdcd0] rounded-2xl bg-white p-4 max-h-[600px] overflow-y-auto space-y-1.5 shadow-sm scrollbar-thin">
-              <p className="text-[10px] font-mono tracking-wider text-[#8c7e6c] uppercase border-b border-[#ebdcd0] pb-1.5 mb-2">作品リスト ({filteredCards.length})</p>
+              <p className="text-xs font-mono tracking-wider text-[#8c7e6c] uppercase border-b border-[#ebdcd0] pb-1.5 mb-2">作品リスト ({filteredCards.length})</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-1.5">
                 {filteredCards.map(card => (
                   <button
@@ -275,14 +290,14 @@ export default function ExhibitionPage() {
                         : 'border-[#ebdcd0]/40 hover:bg-[#fcfaf7] text-[#6e675f] bg-white'
                     }`}
                   >
-                    <span className={`w-5 h-7 rounded flex items-center justify-center text-[9px] font-mono shrink-0 border ${
+                    <span className={`w-5 h-7 rounded flex items-center justify-center text-[10px] font-mono shrink-0 border ${
                       selectedCardId === card.id ? 'bg-[#b39369] text-white border-[#b39369]' : 'bg-[#f4efe8] text-[#8c7e6c] border-[#ebdcd0]/60'
                     }`}>
                       {card.symbol}
                     </span>
                     <div className="leading-tight truncate">
                       <span className="block truncate">{card.name}</span>
-                      <span className="text-[9px] text-[#8e857b] font-mono block truncate">{card.nameEn}</span>
+                      <span className="text-[11px] text-[#8e857b] font-mono block truncate">{card.nameEn}</span>
                     </div>
                   </button>
                 ))}
@@ -313,7 +328,7 @@ export default function ExhibitionPage() {
               <div className="md:col-span-7 space-y-6">
                 <div>
                   <h4 className="text-xs font-mono font-bold tracking-wider text-[#8c7e6c] uppercase border-b border-[#ebdcd0] pb-1 mb-2">キャプション</h4>
-                  <p className="text-xs text-[#4a453f] leading-relaxed italic font-serif">
+                  <p className="text-sm text-[#4a453f] leading-relaxed italic font-serif">
                     {selectedCard.caption}
                   </p>
                 </div>
@@ -324,10 +339,10 @@ export default function ExhibitionPage() {
                     {selectedCard.symbols.map(sym => (
                       <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3.5 space-y-1">
                         <div className="flex justify-between items-center">
-                          <span className="text-[11px] font-bold text-[#2b2825]">{sym.name}</span>
-                          <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
+                          <span className="text-sm font-bold text-[#2b2825]">{sym.name}</span>
+                          <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
                         </div>
-                        <p className="text-[10px] text-[#6e675f] leading-relaxed">
+                        <p className="text-sm text-[#6e675f] leading-relaxed">
                           {sym.description}
                         </p>
                       </div>
@@ -343,9 +358,9 @@ export default function ExhibitionPage() {
       {/* 4大エレメント（スート）の学習アーカイブ */}
       <div className="border border-[#ebdcd0] bg-white rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
         <div className="text-center space-y-2 max-w-lg mx-auto">
-          <span className="text-[10px] font-mono tracking-widest text-[#b39369] uppercase font-bold">ELEMENTS ARCHIVE</span>
+          <span className="text-xs font-mono tracking-widest text-[#b39369] uppercase font-bold">ELEMENTS ARCHIVE</span>
           <h3 className="text-xl font-serif font-bold text-[#2b2825]">4大エレメント（スート）の探求</h3>
-          <p className="text-[11px] text-[#6e675f] leading-relaxed">
+          <p className="text-xs text-[#6e675f] leading-relaxed">
             小アルカナを構成する4つのスートは、世界の成り立ちを表す古代の4大元素（火・水・風・地）に対応しています。
             各エレメントをクリックして、その象徴的意味と自己探求への問いを学びましょう。
           </p>
@@ -369,27 +384,27 @@ export default function ExhibitionPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-2xl leading-none">{suit.icon}</span>
                     <div>
-                      <h4 className="text-sm font-bold text-[#2b2825] flex items-center gap-2">
+                      <h4 className="text-base font-bold text-[#2b2825] flex items-center gap-2">
                         {suit.name}
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded-md font-mono ${suit.badgeBg}`}>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${suit.badgeBg}`}>
                           {suit.element} ({suit.elementEn})
                         </span>
                       </h4>
-                      <p className="text-[10px] text-[#8e857b] font-mono">{suit.nameEn}</p>
+                      <p className="text-xs text-[#8e857b] font-mono">{suit.nameEn}</p>
                     </div>
                   </div>
-                  <span className="text-xs text-[#8c7e6c] font-bold">
+                  <span className="text-sm text-[#8c7e6c] font-bold">
                     {isOpen ? '▲ 閉じる' : '▼ 詳しく見る'}
                   </span>
                 </button>
 
                 {isOpen && (
-                  <div className="mt-4 border-t border-[#ebdcd0]/40 pt-4 space-y-4 text-xs text-[#4a453f] animate-fade-in">
+                  <div className="mt-4 border-t border-[#ebdcd0]/40 pt-4 space-y-4 text-sm text-[#4a453f] animate-fade-in">
                     <div>
-                      <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要キーワード</h5>
+                      <h5 className="text-xs font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要キーワード</h5>
                       <div className="flex flex-wrap gap-1">
                         {suit.keywords.map(kw => (
-                          <span key={kw} className="px-2 py-0.5 rounded-lg bg-[#f4efe8] text-[#6e675f] text-[9px]">
+                          <span key={kw} className="px-2 py-0.5 rounded-lg bg-[#f4efe8] text-[#6e675f] text-xs">
                             #{kw}
                           </span>
                         ))}
@@ -419,6 +434,41 @@ export default function ExhibitionPage() {
           })}
         </div>
       </div>
+
+      {/* 館内放送トースト */}
+      {showBroadcastToast && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm w-full bg-[#1a1816] text-[#ebdcd0] border border-[#b39369]/30 rounded-2xl p-5 shadow-2xl animate-fade-in flex gap-3">
+          <span className="text-xl">📢</span>
+          <div className="space-y-3 flex-1">
+            <div>
+              <h4 className="text-xs font-bold text-[#b39369] tracking-wider font-mono">【館内放送】ワークショップ開催のご案内</h4>
+              <p className="text-xs text-white/90 leading-relaxed mt-1">
+                当館スタッフ・沢田美緒による「対話型アート・ワークショップ」がまもなく開始されます。ペアとなる他の来館者の方がお待ちです。ぜひ「ワークショップの部屋」へお越しください。
+              </p>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowBroadcastToast(false)}
+                className="px-2.5 py-1 rounded text-[10px] hover:bg-white/10 font-bold"
+              >
+                閉じる
+              </button>
+              <Link
+                href="/workshop"
+                className="px-3 py-1 rounded bg-[#b39369] text-white hover:bg-[#a3835a] transition text-[11px] font-bold"
+              >
+                ワークショップへ
+              </Link>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowBroadcastToast(false)}
+            className="text-white/40 hover:text-white text-xs self-start"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,28 +14,20 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { resetGame, completedCases, isAllSolved } = useGameState();
   const pathname = usePathname();
 
-  const navItems = [
-    { href: '/exhibition', label: 'オンライン展示室' },
-    { href: '/consultation', label: 'お悩み受付・活動レポート' },
-    { href: '/dashboard', label: 'キュレーター用管理画面' }
-  ];
   return (
     <div className="min-h-screen flex flex-col bg-[#faf8f5]">
       {/* 美術館らしい上品で清潔感のあるヘッダー */}
       <header className="sticky top-0 z-50 bg-[#faf8f5]/90 border-b border-[#eae5db] text-[#2b2825] backdrop-blur-md px-6 py-4">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-6">
-            <Link href="/exhibition" className="text-xs tracking-wider hover:text-[#b39369] transition">
+            <Link href="/exhibition" className="text-sm tracking-wider hover:text-[#b39369] transition">
               オンライン展示室
             </Link>
-            <Link href="/workshop" className="text-xs tracking-wider hover:text-[#b39369] transition">
+            <Link href="/workshop" className="text-sm tracking-wider hover:text-[#b39369] transition">
               ワークショップの部屋
             </Link>
-            <Link href="/consultation" className="text-xs tracking-wider hover:text-[#b39369] transition">
-              お悩み受付・レポート
-            </Link>
           </div>
-          <p className="text-[9px] text-[#6e675f] tracking-wider">
+          <p className="text-[11px] text-[#6e675f] tracking-wider">
             SOPHIA Online Museum — 自律を促す対話型アート・アーカイブ
           </p>
 
@@ -63,13 +55,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* フッター */}
-      <footer className="py-8 text-center text-[10px] text-[#6e675f] border-t border-[#eae5db]">
+      <footer className="py-8 text-center text-xs text-[#6e675f] border-t border-[#eae5db]">
         <div className="max-w-4xl mx-auto flex justify-between items-center px-6">
           <span>&copy; SOPHIA Art & Counseling Workshop. All Rights Reserved.</span>
           {completedCases.length > 0 && (
             <button
               onClick={resetGame}
-              className="text-xs text-[#b39369] hover:underline font-medium border border-[#eae5db] px-2.5 py-1 rounded bg-white transition"
+              className="text-sm text-[#b39369] hover:underline font-medium border border-[#eae5db] px-2.5 py-1 rounded bg-white transition"
             >
               来館セッションの初期化
             </button>

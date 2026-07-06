@@ -3,6 +3,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_CONSULTATIONS, ConsultationCase } from '@/data/artMuseumData';
 
+interface CompletedCase {
+  caseId: string;
+  cardId: string;
+  sentHighlights: string[];
+}
+
 interface GameStateContextProps {
   consultations: ConsultationCase[];
   completedCases: string[];
@@ -17,11 +23,51 @@ interface GameStateContextProps {
 const GameStateContext = createContext<GameStateContextProps | undefined>(undefined);
 
 export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [completedCases, setCompletedCases] = useState<string[]>([]);
+  const [completedDetails, setCompletedDetails] = useState<CompletedCase[]>([]);
   const [pendingCases, setPendingCases] = useState<{ caseId: string; resolveAt: number; cardId: string; sentHighlights: string[] }[]>([]);
   const [consultations, setConsultations] = useState<ConsultationCase[]>(INITIAL_CONSULTATIONS);
   const [isAllSolved, setIsAllSolved] = useState(false);
   const [playerChosenCard, setPlayerChosenCard] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // 公開用 completedCases（他ファイルとの互換性のため文字列配列として公開）
+  const completedCases = completedDetails.map(d => d.caseId);
+
+  // マウント時に localStorage から状態を復元
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedCompleted = localStorage.getItem('sophia_completed_details');
+      if (savedCompleted) {
+        try {
+          setCompletedDetails(JSON.parse(savedCompleted));
+        } catch (e) {
+          console.error('Failed to parse completed details', e);
+        }
+      }
+      const savedPending = localStorage.getItem('sophia_pending_cases');
+      if (savedPending) {
+        try {
+          setPendingCases(JSON.parse(savedPending));
+        } catch (e) {
+          console.error('Failed to parse pending cases', e);
+        }
+      }
+      setIsLoaded(true);
+    }
+  }, []);
+
+  // 状態変更時に localStorage へ保存（読み込みが完了している場合のみ）
+  useEffect(() => {
+    if (isLoaded && typeof window !== 'undefined') {
+      localStorage.setItem('sophia_completed_details', JSON.stringify(completedDetails));
+    }
+  }, [completedDetails, isLoaded]);
+
+  useEffect(() => {
+    if (isLoaded && typeof window !== 'undefined') {
+      localStorage.setItem('sophia_pending_cases', JSON.stringify(pendingCases));
+    }
+  }, [pendingCases, isLoaded]);
 
   // タイマー監視による pending 状態から solved への移行
   useEffect(() => {
@@ -31,8 +77,11 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       
       if (resolved.length > 0) {
         resolved.forEach(p => {
-          if (!completedCases.includes(p.caseId)) {
-            setCompletedCases(prev => [...prev, p.caseId]);
+          if (!completedDetails.some(d => d.caseId === p.caseId)) {
+            setCompletedDetails(prev => [
+              ...prev,
+              { caseId: p.caseId, cardId: p.cardId, sentHighlights: p.sentHighlights }
+            ]);
           }
         });
         setPendingCases(prev => prev.filter(p => now < p.resolveAt));
@@ -40,7 +89,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [pendingCases, completedCases]);
+  }, [pendingCases, completedDetails]);
 
   // consultationsのステータス同期
   useEffect(() => {
@@ -56,10 +105,13 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             sentHighlights: pending.sentHighlights
           };
         }
-        if (completedCases.includes(c.id)) {
+        const solved = completedDetails.find(d => d.caseId === c.id);
+        if (solved) {
           return {
             ...c,
-            status: 'solved'
+            status: 'solved',
+            sentCardId: solved.cardId,
+            sentHighlights: solved.sentHighlights
           };
         }
         return {
@@ -68,16 +120,16 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         };
       })
     );
-  }, [completedCases, pendingCases]);
+  }, [completedDetails, pendingCases]);
 
   // 全解決チェック
   useEffect(() => {
-    if (completedCases.length >= INITIAL_CONSULTATIONS.length && INITIAL_CONSULTATIONS.length > 0) {
+    if (completedDetails.length >= INITIAL_CONSULTATIONS.length && INITIAL_CONSULTATIONS.length > 0) {
       setIsAllSolved(true);
     } else {
       setIsAllSolved(false);
     }
-  }, [completedCases]);
+  }, [completedDetails]);
 
   const sendCurationHighlights = (caseId: string, cardId: string, highlights: string[]) => {
     const resolveAt = Date.now() + 30000; // 30秒後に返信が届く演出
@@ -103,11 +155,15 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const resetGame = () => {
-    setCompletedCases([]);
+    setCompletedDetails([]);
     setPendingCases([]);
     setPlayerChosenCard(null);
     setIsAllSolved(false);
     setConsultations(INITIAL_CONSULTATIONS);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('sophia_completed_details');
+      localStorage.removeItem('sophia_pending_cases');
+    }
   };
 
   return (
