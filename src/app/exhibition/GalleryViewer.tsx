@@ -59,56 +59,93 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     camera.keysRight = [];
     camera.speed = 0;
     camera.angularSensibility = 1000;
+
+    // タッチ操作による視点回転を完全に無効化
+    // (横スワイプはカスタムハンドラで「体ごと平行移動」として処理する)
+    (camera.inputs as any).clear();
     
     // 左右スライド並行移動のイベント処理
-    const moveStep = 0.5; // 1回のスライド移動距離
+    const moveStep = 0.5; // 1回の移動距離
 
-    const handleKeyDown = (evt: KeyboardEvent) => {
-      const isLeft = evt.keyCode === 37 || evt.keyCode === 65;
-      const isRight = evt.keyCode === 39 || evt.keyCode === 68;
-
-      if (!isLeft && !isRight) return;
-
+    const performLateralMove = (direction: number) => {
       if (selectedRoom === 'lobby' || selectedRoom === 'major' || selectedRoom === 'swords' || selectedRoom === 'pentacles') {
-        const direction = (selectedRoom === 'swords' || selectedRoom === 'pentacles') ? (isLeft ? 1 : -1) : (isLeft ? -1 : 1);
-        
-        let newX = camera.position.x + moveStep * direction;
-        
-        // 限界値（クランプ範囲）を部屋ごとに分ける（仕切り壁の突き抜け防止）
+        const sign = (selectedRoom === 'swords' || selectedRoom === 'pentacles') ? -direction : direction;
+        let newX = camera.position.x + moveStep * sign;
+
         if (selectedRoom === 'swords') {
           newX = Math.max(0.5, Math.min(18, newX));
         } else if (selectedRoom === 'pentacles') {
           newX = Math.max(-18, Math.min(-0.5, newX));
-        } else { // lobby, major
+        } else {
           newX = Math.max(-18, Math.min(18, newX));
         }
-        
+
         camera.position.x = newX;
-        
+
         if (selectedRoom === 'lobby') {
           camera.setTarget(new BABYLON.Vector3(newX, 1.7, -4.1));
         } else if (selectedRoom === 'major') {
           camera.setTarget(new BABYLON.Vector3(newX, 1.7, 20.0));
-        } else { // swords, pentacles
+        } else {
           camera.setTarget(new BABYLON.Vector3(newX, 1.7, -20.0));
         }
       } else if (selectedRoom === 'wands' || selectedRoom === 'cups') {
-        const direction = selectedRoom === 'wands' ? (isLeft ? 1 : -1) : (isLeft ? -1 : 1);
-        
-        let newZ = camera.position.z + moveStep * direction;
-        // 限界値を Z: -16m 〜 16m にクランプ
+        const sign = selectedRoom === 'wands' ? -direction : direction;
+        let newZ = camera.position.z + moveStep * sign;
         newZ = Math.max(-16, Math.min(16, newZ));
         camera.position.z = newZ;
-        
+
         if (selectedRoom === 'wands') {
           camera.setTarget(new BABYLON.Vector3(20.0, 1.7, newZ));
-        } else { // cups
+        } else {
           camera.setTarget(new BABYLON.Vector3(-20.0, 1.7, newZ));
         }
       }
     };
+
+    const handleKeyDown = (evt: KeyboardEvent) => {
+      const isLeft = evt.keyCode === 37 || evt.keyCode === 65;
+      const isRight = evt.keyCode === 39 || evt.keyCode === 68;
+      if (!isLeft && !isRight) return;
+      performLateralMove(isLeft ? -1 : 1);
+    };
     window.addEventListener('keydown', handleKeyDown);
-    
+
+    // --- スマホタッチ操作：横スワイプを平行移動に変換 ---
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const touchMoveThreshold = 12; // px：縦スクロールと区別するための最小水平移動量
+    const touchMovePerStep = 60;   // px：この距離スワイプするごとに1ステップ移動
+
+    const handleTouchStart = (evt: TouchEvent) => {
+      if (evt.touches.length !== 1) return;
+      touchStartX = evt.touches[0].clientX;
+      touchStartY = evt.touches[0].clientY;
+    };
+
+    const handleTouchMove = (evt: TouchEvent) => {
+      if (evt.touches.length !== 1) return;
+      const dx = evt.touches[0].clientX - touchStartX;
+      const dy = evt.touches[0].clientY - touchStartY;
+
+      // 縦方向の動きが大きい場合はページスクロールとみなして無視
+      if (Math.abs(dy) > Math.abs(dx)) return;
+      if (Math.abs(dx) < touchMoveThreshold) return;
+
+      // カメラ操作と判断してページスクロールを防止
+      evt.preventDefault();
+
+      if (Math.abs(dx) >= touchMovePerStep) {
+        performLateralMove(dx > 0 ? -1 : 1);
+        touchStartX = evt.touches[0].clientX;
+        touchStartY = evt.touches[0].clientY;
+      }
+    };
+
+    const canvas = canvasRef.current;
+    canvas?.addEventListener('touchstart', handleTouchStart, { passive: true });
+    canvas?.addEventListener('touchmove', handleTouchMove, { passive: false });
+
     scene.collisionsEnabled = false;
     camera.checkCollisions = false;
     camera.applyGravity = false;
@@ -347,6 +384,8 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('keydown', handleKeyDown);
+      canvas?.removeEventListener('touchstart', handleTouchStart);
+      canvas?.removeEventListener('touchmove', handleTouchMove);
       engine.dispose();
     };
   }, [selectedRoom, onSelectCard, onChangeRoom]);
