@@ -58,11 +58,8 @@ export default function WorkshopPage() {
   // カードを引く
   const handleDrawCard = () => {
     if (!activeCase) return;
-    const availableCardIds = Object.keys(activeCase.vtsDialogues);
-    if (availableCardIds.length === 0) return;
-    
-    const randomCardId = availableCardIds[Math.floor(Math.random() * availableCardIds.length)];
-    const card = TAROT_CARDS.find(c => c.id === randomCardId);
+    const randomIndex = Math.floor(Math.random() * TAROT_CARDS.length);
+    const card = TAROT_CARDS[randomIndex];
     if (card) {
       setDrawnCard(card);
       startNextStep(2, 2200, `${activeCase.clientName}さんがカードを見つめています...`);
@@ -105,22 +102,31 @@ export default function WorkshopPage() {
   const chatMessages: ChatMsg[] = [];
   
   if (activeCase) {
-    // 1. ファシリテーターの挨拶
+    // 1. ファシリテーターの挨拶と悩み共有への促し
     chatMessages.push({
       sender: 'facilitator',
       name: FACILITATOR.name,
       avatar: FACILITATOR.avatar,
-      text: FACILITATOR.greeting,
+      text: `${FACILITATOR.greeting}\n\n今日ペアを組むのは${activeCase.clientName}さんですね。今、どのような悩みや葛藤を抱えているか、プレイヤーさんにも共有していただけますか？`,
       align: 'left'
     });
 
     if (step >= 1 || activeCase.status !== 'unresolved') {
-      // 2. ファシリテーター「カードを引いてみましょう」
+      // 2. 相談者が悩みを語る
+      chatMessages.push({
+        sender: 'client',
+        name: activeCase.clientName,
+        avatar: activeCase.clientAvatar,
+        text: `はい。実は……\n「${activeCase.text}」`,
+        align: 'right'
+      });
+
+      // 3. ファシリテーターが受け止めてカードドローへ
       chatMessages.push({
         sender: 'facilitator',
         name: FACILITATOR.name,
         avatar: FACILITATOR.avatar,
-        text: "では、本日の対話の鏡となるカードを1枚引いてみましょう。正解はありません。偶然選ばれた絵を前にして、何を感じるかをお互いに話していきます。",
+        text: `なるほど、そのような葛藤を抱えていらっしゃるのですね。言葉にして共有していただき、ありがとうございます。\n\nでは、本日の対話の鏡となるカードを1枚引いてみましょう。偶然選ばれた絵を前にして、何を感じるかをお互いに話していきます。`,
         align: 'left'
       });
     }
@@ -138,58 +144,96 @@ export default function WorkshopPage() {
         align: 'center'
       });
 
-      const dialogues = activeCase.vtsDialogues[card.id] || [];
+      // 相談者の動的対話生成ヘルパー
+      const getDialogueTurn = (index: number) => {
+        const clientDialogues = activeCase.vtsDialogues[card.id];
+        if (clientDialogues && clientDialogues[index]) {
+          return clientDialogues[index];
+        }
+
+        // 78枚の他のカード（定義がないカード）向けの動的VTS対話生成
+        const sym = card.symbols[index];
+        if (!sym) {
+          return {
+            question: "このカードを見て、他に気になる部分はありますか？",
+            clientResponse: "全体的に描かれている色彩や、漂う象徴的な雰囲気がとても印象深いです。"
+          };
+        }
+
+        const questions = [
+          "このカードを見て、最初に目に入ったものは何ですか？",
+          "そう感じるのは、カードのどこを見てそう思いましたか？",
+          "他に気になるものはありますか？"
+        ];
+
+        let response = "";
+        if (index === 0) {
+          response = `そうですね……まず${sym.location}に描かれている『${sym.name}』が目に入りました。なんとなく、${sym.highlightPassage}のように見えます。`;
+        } else if (index === 1) {
+          response = `あと、${sym.location}にある『${sym.name}』も気になって。絵の中でそこだけ${sym.highlightPassage}な様子で描かれているので、なぜか目が向くんです。`;
+        } else {
+          response = `あとは${sym.location}の『${sym.name}』ですね。よく見ると${sym.highlightPassage}な感じがして、特別な意味を感じます。`;
+        }
+
+        return {
+          question: questions[index] || "他に気になる部分はありますか？",
+          clientResponse: response
+        };
+      };
 
       // 4. 第一の対話ターン
-      if (dialogues.length > 0 && (step >= 2 || activeCase.status !== 'unresolved')) {
+      if (step >= 2 || activeCase.status !== 'unresolved') {
+        const turn = getDialogueTurn(0);
         chatMessages.push({
           sender: 'facilitator',
           name: FACILITATOR.name,
           avatar: FACILITATOR.avatar,
-          text: dialogues[0].question,
+          text: turn.question,
           align: 'left'
         });
         chatMessages.push({
           sender: 'client',
           name: activeCase.clientName,
           avatar: activeCase.clientAvatar,
-          text: dialogues[0].clientResponse,
+          text: turn.clientResponse,
           align: 'right'
         });
       }
 
       // 5. 第二の対話ターン
-      if (dialogues.length > 1 && (step >= 3 || activeCase.status !== 'unresolved')) {
+      if (step >= 3 || activeCase.status !== 'unresolved') {
+        const turn = getDialogueTurn(1);
         chatMessages.push({
           sender: 'facilitator',
           name: FACILITATOR.name,
           avatar: FACILITATOR.avatar,
-          text: dialogues[1].question,
+          text: turn.question,
           align: 'left'
         });
         chatMessages.push({
           sender: 'client',
           name: activeCase.clientName,
           avatar: activeCase.clientAvatar,
-          text: dialogues[1].clientResponse,
+          text: turn.clientResponse,
           align: 'right'
         });
       }
 
-      // 6. 第三の対話ターン（もし存在すれば）
-      if (dialogues.length > 2 && (step >= 3 || activeCase.status !== 'unresolved')) {
+      // 6. 第三の対話ターン (カードに3つ以上のシンボルが存在する場合に展開)
+      if ((step >= 3 || activeCase.status !== 'unresolved') && card.symbols.length > 2) {
+        const turn = getDialogueTurn(2);
         chatMessages.push({
           sender: 'facilitator',
           name: FACILITATOR.name,
           avatar: FACILITATOR.avatar,
-          text: dialogues[2].question,
+          text: turn.question,
           align: 'left'
         });
         chatMessages.push({
           sender: 'client',
           name: activeCase.clientName,
           avatar: activeCase.clientAvatar,
-          text: dialogues[2].clientResponse,
+          text: turn.clientResponse,
           align: 'right'
         });
       }
@@ -235,32 +279,53 @@ export default function WorkshopPage() {
 
       // 9. 解決（気づき）のチャットログ
       if (activeCase.status === 'solved') {
-        const report = activeCase.resolutionReports[card.id];
-        if (report) {
-          chatMessages.push({
-            sender: 'client',
-            name: activeCase.clientName,
-            avatar: activeCase.clientAvatar,
-            text: `少し一人で考えてみました。\n\n${report}`,
-            align: 'right'
-          });
+        let report = activeCase.resolutionReports[card.id];
+        
+        // 送信したハイライトに対応するシンボル情報を特定
+        const matchedSymbols = card.symbols.filter(sym =>
+          highlights.some(h => h.includes(sym.highlightPassage))
+        );
+        const sym = matchedSymbols[0];
 
-          chatMessages.push({
-            sender: 'facilitator',
-            name: FACILITATOR.name,
-            avatar: FACILITATOR.avatar,
-            text: `${activeCase.clientName}さん、素晴らしい気づきですね。偶然引いたカードを鏡として、自分自身の中にある「自律の力」に目覚められたようです。あなたのこれからの自立した選択を心より応援しています。`,
-            align: 'left'
-          });
-
-          chatMessages.push({
-            sender: 'system',
-            name: "SYSTEM",
-            avatar: "⚙️",
-            text: `✓ ${activeCase.clientName}さんとの対話セッションが完了し、自律への気付きが解放されました。`,
-            align: 'center'
-          });
+        // 各相談者の個別の解決レポート（定義がないカードの場合は、本人の悩みテーマに合わせた汎用解決メッセージを自動ブレンド）
+        if (!report) {
+          if (activeCase.id === 'case-yuta') {
+            report = `私はこれまで、親や周囲の意見ばかりを気にして「誰かが決めた正しい道」を探そうとしていました。でも、自分の中にある可能性を無視していたことに気づきました。完璧でなくていい。今の自分にできることから一歩を踏み出す勇気を持てた気がします。`;
+          } else if (activeCase.id === 'case-misaki') {
+            report = `私は失敗を恐れるあまり、AIの確率モデルのような「完璧な保証」がないと動けなくなっていました。ですが、完璧な準備などそもそも存在せず、動かないでいること自体も自分で選んだ結果だったのだと気づきました。これからは一歩を踏み出す意思そのものを大切にします。`;
+          } else { // case-ren
+            report = `私はSNSの評価や他人の反応ばかりに囚われ、自分が本当に描きたいものを見失っていました。でも、フォロワーの承認は本来の表現には不要なものだったのかもしれません。これからは自分自身の内なる声と、描くことへの純粋な情熱を大切にしていきます。`;
+          }
         }
+
+        let connectionText = "";
+        if (sym) {
+          connectionText = `プレイヤーさんが届けてくれた、${sym.location}にある『${sym.name}』の象徴——\n「${sym.highlightPassage}」\nという言葉について、あれから深く考えてみました。\n\nこのシンボルには「${sym.description}」という意味があると知り、なぜ自分がこれまで同じところで立ち止まり、悩み続けていたのか、その理由がすとんと腑に落ちて納得がいきました。\n\n`;
+        }
+
+        chatMessages.push({
+          sender: 'client',
+          name: activeCase.clientName,
+          avatar: activeCase.clientAvatar,
+          text: `${connectionText}そうして自分の中で整理がついたのですが、${report}`,
+          align: 'right'
+        });
+
+        chatMessages.push({
+          sender: 'facilitator',
+          name: FACILITATOR.name,
+          avatar: FACILITATOR.avatar,
+          text: `${activeCase.clientName}さん、素晴らしい気づきですね。プレイヤーさんが届けてくれたシンボルの解釈を鏡として、ご自身の中で「納得のいく答え」を導き出されたようです。あなたのこれからの自立した歩みを心より応援しています。`,
+          align: 'left'
+        });
+
+        chatMessages.push({
+          sender: 'system',
+          name: "SYSTEM",
+          avatar: "⚙️",
+          text: `✓ ${activeCase.clientName}さんとの対話セッションが完了し、自律への気付きが解放されました。`,
+          align: 'center'
+        });
       }
     }
   }
@@ -340,11 +405,6 @@ export default function WorkshopPage() {
 
               {/* チャット会話ログエリア */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#fcfaf7]/30">
-                {/* 相談者の悩みカード */}
-                <div className="bg-[#1a1816] text-[#ebdcd0] rounded-2xl p-5 space-y-2 border border-[#b39369]/20 shadow-sm max-w-2xl mx-auto mb-4">
-                  <span className="text-[10px] font-mono tracking-wider text-[#b39369] font-bold">相談者の悩み（テーマ）</span>
-                  <p className="text-sm leading-relaxed text-white/90 font-serif">「{activeCase.text}」</p>
-                </div>
 
                 {/* 動的チャットメッセージの描画 */}
                 {chatMessages.map((msg, index) => {
@@ -455,10 +515,10 @@ export default function WorkshopPage() {
                 {activeCase.status === 'unresolved' && step === 0 && (
                   <div className="flex justify-center py-2">
                     <button
-                      onClick={() => setStep(1)}
+                      onClick={() => startNextStep(1, 1800, `${activeCase.clientName}さんが状況を打ち明けています...`)}
                       className="px-6 py-3 rounded-xl text-sm font-bold bg-[#b39369] hover:bg-[#a3835a] text-white transition shadow-sm font-mono tracking-wider"
                     >
-                      対話を開始する
+                      対話を始めて、悩みを聞く
                     </button>
                   </div>
                 )}
