@@ -54,15 +54,6 @@ export default function ExhibitionPage() {
     { key: 'pentacles', label: 'ペンタクル' },
   ];
 
-  const rooms = [
-    { key: 'lobby', label: '🏛️ ロビー' },
-    { key: 'major', label: '🃏 大アルカナ室' },
-    { key: 'wands', label: '🪄 ワンド室' },
-    { key: 'cups', label: '🍷 カップ室' },
-    { key: 'swords', label: '⚔️ ソード室' },
-    { key: 'pentacles', label: '🪙 ペンタクル室' },
-  ];
-
   return (
     <div className="space-y-8 animate-fade-in max-w-7xl mx-auto">
       {/* ページヘッダー */}
@@ -99,137 +90,118 @@ export default function ExhibitionPage() {
 
       {/* 3D展示室ビュー */}
       {viewMode === '3d' && (
-        <div className="space-y-6">
-          {/* ロビー・展示室セレクトスイッチ */}
-          <div className="flex flex-wrap justify-center gap-2 bg-[#fcfaf7] border border-[#ebdcd0]/60 p-2.5 rounded-2xl max-w-2xl mx-auto shadow-sm">
-            {rooms.map(room => (
-              <button
-                key={room.key}
-                onClick={() => setSelected3DRoom(room.key)}
-                className={`px-3 py-1.5 rounded-xl text-xs transition-all ${
-                  selected3DRoom === room.key
-                    ? 'bg-[#8c6239] text-white font-bold shadow'
-                    : 'text-[#6e675f] hover:text-[#2b2825] bg-white border border-[#ebdcd0]/40 hover:bg-[#faf8f5]'
-                }`}
-              >
-                {room.label}
-              </button>
-            ))}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* 左側：Babylon.js製 3Dギャラリー */}
+          <div className="lg:col-span-8 space-y-3">
+            <GalleryViewer
+              onSelectCard={handleSelectCardFrom3D}
+              selectedRoom={selected3DRoom}
+              onChangeRoom={(room) => setSelected3DRoom(room)}
+            />
+            
+            <div className="bg-[#fcfaf7] border border-[#ebdcd0]/60 px-4 py-3 rounded-2xl text-[10px] text-[#6e675f] flex flex-col sm:flex-row justify-between items-center gap-2 shadow-inner">
+              <span>🎮 <strong>操作:</strong> 左右矢印キー(またはA/Dキー) ＆ マウス・スマホドラッグで「左右の視点回転（首振り）」</span>
+              <span className="text-[#8c6239] font-bold">🏛️ 中央の定位置から、周囲360度の壁面に並ぶカードを見渡せます</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* 左側：Babylon.js製 3Dギャラリー */}
-            <div className="lg:col-span-8 space-y-3">
-              <GalleryViewer
-                onSelectCard={handleSelectCardFrom3D}
-                selectedRoom={selected3DRoom}
-                onChangeRoom={(room) => setSelected3DRoom(room)}
-              />
-              
-              <div className="bg-[#fcfaf7] border border-[#ebdcd0]/60 px-4 py-3 rounded-2xl text-[10px] text-[#6e675f] flex flex-col sm:flex-row justify-between items-center gap-2 shadow-inner">
-                <span>🎮 <strong>移動:</strong> WASD / 矢印キー ＆ ドラッグで視点移動（スマホ対応）</span>
-                <span className="text-[#8c6239] font-bold">🏛️ 3D空間内の案内柱（ゴールデンピラー）をクリックすることでも部屋間を移動できます</span>
+          {/* 右側（PC用デスクトップ表示）：選択したカードの解説パネル */}
+          <div className="hidden lg:block lg:col-span-4 border border-[#ebdcd0] bg-white rounded-3xl p-6 shadow-sm space-y-6">
+            <div className="text-center space-y-2">
+              <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
+              <div className="relative w-32 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow bg-[#faf8f5]">
+                <Image
+                  src={selectedCard.imagePath}
+                  alt={selectedCard.name}
+                  fill
+                  sizes="130px"
+                  className="object-cover"
+                />
               </div>
+              <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
+              <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
             </div>
 
-            {/* 右側（PC用デスクトップ表示）：選択したカードの解説パネル */}
-            <div className="hidden lg:block lg:col-span-4 border border-[#ebdcd0] bg-white rounded-3xl p-6 shadow-sm space-y-6">
-              <div className="text-center space-y-2">
-                <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
-                <div className="relative w-32 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow bg-[#faf8f5]">
-                  <Image
-                    src={selectedCard.imagePath}
-                    alt={selectedCard.name}
-                    fill
-                    sizes="130px"
-                    className="object-cover"
-                  />
-                </div>
-                <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
-                <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
+            <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4">
+              <div>
+                <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1.5">キャプション</h5>
+                <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
+                  {selectedCard.caption}
+                </p>
               </div>
 
-              <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4">
-                <div>
-                  <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1.5">キャプション</h5>
-                  <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
-                    {selectedCard.caption}
-                  </p>
-                </div>
-
-                <div>
-                  <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-2">主要なシンボルと哲学的解釈</h5>
-                  <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
-                    {selectedCard.symbols.map(sym => (
-                      <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
-                        <div className="flex justify-between items-center text-[10px]">
-                          <span className="font-bold text-[#2b2825]">{sym.name}</span>
-                          <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
-                        </div>
-                        <p className="text-[9px] text-[#6e675f] leading-relaxed">
-                          {sym.description}
-                        </p>
+              <div>
+                <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-2">主要なシンボルと哲学的解釈</h5>
+                <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                  {selectedCard.symbols.map(sym => (
+                    <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
+                      <div className="flex justify-between items-center text-[10px]">
+                        <span className="font-bold text-[#2b2825]">{sym.name}</span>
+                        <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* モバイル/タブレット用前面ポップアップモーダル */}
-            {isMobileModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in">
-                <div className="bg-white w-full max-w-md rounded-3xl border border-[#ebdcd0] p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
-                  <button
-                    onClick={() => setIsMobileModalOpen(false)}
-                    className="absolute top-4 right-4 text-[#8e857b] hover:text-[#2b2825] text-lg font-bold w-8 h-8 rounded-full bg-[#f4efe8] flex items-center justify-center"
-                  >
-                    ✕
-                  </button>
-                  <div className="text-center space-y-2 pt-2">
-                    <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
-                    <div className="relative w-28 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow">
-                      <Image
-                        src={selectedCard.imagePath}
-                        alt={selectedCard.name}
-                        fill
-                        sizes="110px"
-                        className="object-cover"
-                      />
-                    </div>
-                    <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
-                    <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
-                  </div>
-
-                  <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4 text-left">
-                    <div>
-                      <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">キャプション</h5>
-                      <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
-                        {selectedCard.caption}
+                      <p className="text-[9px] text-[#6e675f] leading-relaxed">
+                        {sym.description}
                       </p>
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
-                    <div className="space-y-2">
-                      <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要なシンボルと解釈</h5>
-                      <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-                        {selectedCard.symbols.map(sym => (
-                          <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
-                            <div className="flex justify-between items-center text-[10px]">
-                              <span className="font-bold text-[#2b2825]">{sym.name}</span>
-                              <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
-                            </div>
-                            <p className="text-[9px] text-[#6e675f] leading-relaxed">
-                              {sym.description}
-                            </p>
+          {/* モバイル/タブレット用前面ポップアップモーダル */}
+          {isMobileModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in">
+              <div className="bg-white w-full max-w-md rounded-3xl border border-[#ebdcd0] p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
+                <button
+                  onClick={() => setIsMobileModalOpen(false)}
+                  className="absolute top-4 right-4 text-[#8e857b] hover:text-[#2b2825] text-lg font-bold w-8 h-8 rounded-full bg-[#f4efe8] flex items-center justify-center"
+                >
+                  ✕
+                </button>
+                <div className="text-center space-y-2 pt-2">
+                  <span className="text-[10px] font-mono text-[#b39369] font-bold tracking-wider">{selectedCard.exhibitionNo}</span>
+                  <div className="relative w-28 aspect-[1/1.6] mx-auto rounded-xl overflow-hidden border border-[#ebdcd0] shadow">
+                    <Image
+                      src={selectedCard.imagePath}
+                      alt={selectedCard.name}
+                      fill
+                      sizes="110px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <h3 className="text-lg font-serif font-bold text-[#2b2825] mt-1">{selectedCard.name}</h3>
+                  <p className="text-xs text-[#8e857b] font-mono italic">{selectedCard.nameEn} ({selectedCard.symbol})</p>
+                </div>
+
+                <div className="border-t border-[#ebdcd0]/60 pt-4 space-y-4 text-left">
+                  <div>
+                    <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">キャプション</h5>
+                    <p className="text-[11px] text-[#4a453f] leading-relaxed italic font-serif">
+                      {selectedCard.caption}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h5 className="text-[10px] font-mono font-bold tracking-wider text-[#8c7e6c] uppercase mb-1">主要なシンボルと解釈</h5>
+                    <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                      {selectedCard.symbols.map(sym => (
+                        <div key={sym.id} className="bg-[#fcfaf7] border border-[#ebdcd0]/40 rounded-xl p-3 space-y-1">
+                          <div className="flex justify-between items-center text-[10px]">
+                            <span className="font-bold text-[#2b2825]">{sym.name}</span>
+                            <span className="text-[8px] font-mono px-1 rounded bg-[#f4efe8] text-[#8c7e6c]">{sym.location}</span>
                           </div>
-                        ))}
-                      </div>
+                          <p className="text-[9px] text-[#6e675f] leading-relaxed">
+                            {sym.description}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

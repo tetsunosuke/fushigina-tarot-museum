@@ -26,30 +26,44 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
     scene.clearColor = new BABYLON.Color4(0.12, 0.11, 0.10, 1.0);
 
     // --- 選択した部屋に応じてカメラの初期位置を変える ---
+    // ロビーや展示室の「中央の定位置」にカメラを置く
     let cameraStartPos = new BABYLON.Vector3(0, 1.7, -15); // デフォルトロビー位置
-    if (selectedRoom === 'major') cameraStartPos = new BABYLON.Vector3(-20, 1.7, 20 - 5);
-    else if (selectedRoom === 'wands') cameraStartPos = new BABYLON.Vector3(20, 1.7, 20 - 5);
-    else if (selectedRoom === 'cups') cameraStartPos = new BABYLON.Vector3(-20, 1.7, -20 - 5);
-    else if (selectedRoom === 'swords') cameraStartPos = new BABYLON.Vector3(20, 1.7, -20 - 5);
-    else if (selectedRoom === 'pentacles') cameraStartPos = new BABYLON.Vector3(-20, 1.7, 0 - 5);
+    if (selectedRoom === 'major') cameraStartPos = new BABYLON.Vector3(-20, 1.7, 20);
+    else if (selectedRoom === 'wands') cameraStartPos = new BABYLON.Vector3(20, 1.7, 20);
+    else if (selectedRoom === 'cups') cameraStartPos = new BABYLON.Vector3(-20, 1.7, -20);
+    else if (selectedRoom === 'swords') cameraStartPos = new BABYLON.Vector3(20, 1.7, -20);
+    else if (selectedRoom === 'pentacles') cameraStartPos = new BABYLON.Vector3(-20, 1.7, 0);
 
     const camera = new BABYLON.FreeCamera('freeCamera', cameraStartPos, scene);
     camera.attachControl(canvasRef.current, true);
     
-    // 操作キー設定（WASDと矢印キー）
-    camera.keysUp = [87, 38];
-    camera.keysDown = [83, 40];
-    camera.keysLeft = [65, 37];
-    camera.keysRight = [68, 39];
+    // 前後左右の「移動キー」をすべて空配列にし、キーボードによる移動（歩行）を完全に禁止する
+    camera.keysUp = [];
+    camera.keysDown = [];
+    camera.keysLeft = [];
+    camera.keysRight = [];
     
-    camera.speed = 0.35;
+    // 移動スピードを0に設定
+    camera.speed = 0;
     camera.angularSensibility = 1000;
     
-    // 衝突判定と重力
-    scene.collisionsEnabled = true;
-    camera.checkCollisions = true;
-    camera.applyGravity = true;
-    camera.ellipsoid = new BABYLON.Vector3(0.6, 0.9, 0.6);
+    // キーボードの矢印キー（左右）や A / D キーでの「回転のみ」をイベント処理でハンドリングする
+    const handleKeyDown = (evt: KeyboardEvent) => {
+      // 矢印左(37) または A(65)
+      if (evt.keyCode === 37 || evt.keyCode === 65) {
+        camera.cameraRotation.y -= 0.05;
+      }
+      // 矢印右(39) または D(68)
+      if (evt.keyCode === 39 || evt.keyCode === 68) {
+        camera.cameraRotation.y += 0.05;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // 衝突判定と重力（静止カメラなので不要ですが念のため残します）
+    scene.collisionsEnabled = false;
+    camera.checkCollisions = false;
+    camera.applyGravity = false;
 
     // --- 照明の追加 ---
     const light1 = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
@@ -262,13 +276,40 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
       engine.dispose();
     };
   }, [selectedRoom, onSelectCard, onChangeRoom]);
 
+  const rooms = [
+    { key: 'lobby', label: '🏛️ ロビー' },
+    { key: 'major', label: '🃏 大アルカナ' },
+    { key: 'wands', label: '🪄 ワンド' },
+    { key: 'cups', label: '🍷 カップ' },
+    { key: 'swords', label: '⚔️ ソード' },
+    { key: 'pentacles', label: '🪙 ペンタクル' },
+  ];
+
   return (
     <div className="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden border border-[#ebdcd0] bg-[#1a1816] shadow-inner select-none">
       <canvas ref={canvasRef} className="w-full h-full block focus:outline-none" />
+
+      {/* ビューワー内にオーバーレイする部屋セレクター */}
+      <div className="absolute top-4 left-4 right-4 flex flex-wrap justify-center gap-1.5 bg-[#1a1816]/75 backdrop-blur-md p-1.5 rounded-2xl border border-[#b39369]/20 z-10">
+        {rooms.map(room => (
+          <button
+            key={room.key}
+            onClick={() => onChangeRoom(room.key)}
+            className={`px-3 py-1 rounded-xl text-[10px] md:text-xs font-bold transition-all ${
+              selectedRoom === room.key
+                ? 'bg-[#b39369] text-white shadow-sm'
+                : 'text-[#ebdcd0] hover:text-white hover:bg-white/10'
+            }`}
+          >
+            {room.label}
+          </button>
+        ))}
+      </div>
       
       {loadingProgress && (
         <div className="absolute inset-0 bg-[#121110] flex flex-col items-center justify-center gap-3">
