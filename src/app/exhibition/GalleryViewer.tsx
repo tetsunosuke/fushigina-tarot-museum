@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
+import * as GUI from 'babylonjs-gui';
 import { TAROT_CARDS, TarotCard } from '@/data/artMuseumData';
 
 interface GalleryProps {
@@ -172,9 +173,25 @@ export default function GalleryViewer({ onSelectCard, selectedRoom, onChangeRoom
       // 看板テキストボード
       const sign = BABYLON.MeshBuilder.CreatePlane(`sign_${portal.key}`, { width: 1.2, height: 0.5 }, scene);
       sign.position.set(portal.x, 2.0, portal.z - 0.41);
-      const signMat = new BABYLON.StandardMaterial(`signMat_${portal.key}`, scene);
-      signMat.diffuseColor = new BABYLON.Color3(0.08, 0.07, 0.06);
-      sign.material = signMat;
+      
+      // DynamicTextureによるテキスト描画
+      const signTexture = GUI.AdvancedDynamicTexture.CreateForMesh(sign, 512, 256);
+      
+      const textBlock = new GUI.TextBlock();
+      textBlock.text = portal.name;
+      textBlock.color = "#f4efe8"; // 明るいアンティークベージュ
+      textBlock.fontSize = 44;
+      textBlock.fontFamily = "serif";
+      textBlock.fontWeight = "bold";
+      
+      // 看板全体の背景色設定
+      const signBg = new GUI.Rectangle();
+      signBg.background = "#1a1816"; // シックなダーク背景
+      signBg.thickness = 2;
+      signBg.color = portal.key === 'lobby' ? "#a63c3c" : "#b39369"; // 枠線カラー
+      signBg.addControl(textBlock);
+      
+      signTexture.addControl(signBg);
     });
 
     // --- 78枚のタロットアートの分類配置 ---
